@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 06:29:27 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 11:04:22 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 00:03:50 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	ft_move(t_mlx **mlx, int dir)
 
 	x_map = ft_get_i_map(((*mlx)->player)->x, 20, 25);
 	y_map = ft_get_i_map(((*mlx)->player)->y, 100, 25);
-	printf("[%d,%d]", x_map, y_map);
+	printf("Actual pos : [%d,%d]", x_map, y_map);
 	//printf("[%d,%d]\n", ((*mlx)->player)->x, ((*mlx)->player)->y);
 	if (!ft_check_grid_bounds((*mlx)->player, (*mlx)->grid, dir))
 	{
@@ -178,7 +178,7 @@ int	main(void)
 	mlx->player = ft_new_player((mlx->x)/2 + 1, (mlx->y)/2 - 8, 22, "ozuk", 0x00F87D99);
 	int	x_map = ft_get_i_map((mlx->player)->x - 1, 20, 25);
 	int	y_map = ft_get_i_map((mlx->player)->y - 1, 100, 25);
-	printf("[%d,%d]\n", x_map, y_map);
+	//printf("START\n[%d,%d]\n", x_map, y_map);
 	//(mlx->map)[][] = ;
 	ft_display_grid(mlx);
 	ft_display_player(mlx);

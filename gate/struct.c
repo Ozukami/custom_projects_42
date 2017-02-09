@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 10:58:47 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 00:08:09 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,19 @@ int		**ft_init_map(int x, int y)
 	int		**map;
 	int		i;
 	int		j;
+	int		x_max;
+	int		y_max;
 
-	map = malloc(sizeof(int *) * (y + 1));
+	x_max = ft_get_i_map(x, 20, 25);
+	y_max = ft_get_i_map(y, 100, 25);
+	map = malloc(sizeof(int *) * (y_max));
 	i = 0;
-	while (i < y)
+	j = 0;
+	while (i < y_max)
 	{
-		map[i] = malloc(sizeof(int) * (x + 1));
 		j = 0;
-		while (j < x)
+		map[i] = malloc(sizeof(int) * (x_max));
+		while (j < x_max)
 		{
 			map[i][j] = 1;
 			j++;
@@ -48,6 +53,7 @@ int		**ft_init_map(int x, int y)
 		map[i][j] = 0;
 		i++;
 	}
+	map[i] = malloc(sizeof(int));
 	map[i][0] = 0;
 	return (map);
 }
@@ -68,7 +74,7 @@ t_mlx	*ft_new_mlx(int x, int y, char *title)
 	new->gates = NULL;
 	new->player = NULL;
 	new->grid = ft_new_rect(20, 100, x - 20, y - 20);
-	//new->map = ft_init_map(x, y);
+	new->map = ft_init_map(x, y);
 	return (new);
 }
 
