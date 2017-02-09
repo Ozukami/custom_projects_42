@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/08 11:52:53 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/09 07:43:09 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,18 @@
 /*
 ** INIT FUNCTIONS
 */
+
+t_rect	*ft_new_rect(int x1, int y1, int x2, int y2)
+{
+	t_rect	*new;
+
+	new = malloc(sizeof(t_rect));
+	new->x1 = x1;
+	new->y1 = y1;
+	new->x2 = x2;
+	new->y2 = y2;
+	return (new);
+}
 
 t_mlx	*ft_new_mlx(int x, int y, char *title)
 {
@@ -29,16 +41,17 @@ t_mlx	*ft_new_mlx(int x, int y, char *title)
 	new->pos_y = y / 2;
 	new->draw = 1;
 	new->color = 0x00000000;
-	new->buts = NULL;
+	new->gates = NULL;
 	new->player = NULL;
+	new->grid = ft_new_rect(20, 100, x - 20, y - 20);
 	return (new);
 }
 
-t_but	*ft_new_but(int x, int y, int col, int line, int color, char *title)
+t_gate	*ft_new_gate(int x, int y, int col, int line, int color, char *title)
 {
-	t_but	*new;
+	t_gate	*new;
 
-	new = malloc(sizeof(t_but));
+	new = malloc(sizeof(t_gate));
 	new->title = title;
 	new->x = x;
 	new->y = y;
@@ -67,38 +80,8 @@ t_player	*ft_new_player(int x, int y, int size, char *name, int color)
 ** MOD FUNCTIONS
 */
 
-void	ft_add_but(t_mlx **mlx, t_but *new_but)
+void	ft_add_gate(t_mlx **mlx, t_gate *new_gate)
 {
-	new_but->next = (*mlx)->buts;
-	(*mlx)->buts = new_but;
-}
-
-/*
-** DISPLAY FUNCTIONS
-*/
-
-void		ft_display_but(t_mlx *mlx)
-{
-	ft_fill_rectangle(mlx->mlx, mlx->win, (mlx->buts)->x, (mlx->buts)->y,
-			(mlx->buts)->col, (mlx->buts)->line, (mlx->buts)->color);
-	mlx_string_put(mlx->mlx, mlx->win, (mlx->buts)->x, (mlx->buts)->y,
-			0x00000000, (mlx->buts)->title);
-}
-
-void		ft_hide_gate(t_mlx *mlx)
-{
-	ft_fill_rectangle(mlx->mlx, mlx->win, (mlx->buts)->x, (mlx->buts)->y,
-			(mlx->buts)->col, (mlx->buts)->line, 0x00000000);
-}
-
-void		ft_display_player(t_mlx *mlx)
-{
-	ft_fill_rectangle(mlx->mlx, mlx->win, (mlx->player)->x, (mlx->player)->y,
-			(mlx->player)->size, (mlx->player)->size, (mlx->player)->color);
-}
-
-void		ft_hide_player(t_mlx *mlx)
-{
-	ft_fill_rectangle(mlx->mlx, mlx->win, (mlx->player)->x, (mlx->player)->y,
-			(mlx->player)->size, (mlx->player)->size, 0x00000000);
+	new_gate->next = (*mlx)->gates;
+	(*mlx)->gates = new_gate;
 }
