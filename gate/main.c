@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 06:29:27 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 07:43:10 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/09 09:26:16 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,22 +86,9 @@ int	ft_move(t_mlx **mlx, int dir)
  ** HOOKS
  */
 
-int	ft_key_event_handler(int key, t_mlx **mlx)
+int	ft_key_release_event_handler(int key, t_mlx **mlx)
 {
-	if (key == 53) // 53 = ECHAP
-		exit(0);
-	else if (key == 123 || key == 124 || key == 125 || key == 126)
-	{
-		ft_hide_player(*mlx);
-		if (key == 123) // 123 = LEFT 1
-			ft_move(mlx, 1);
-		else if (key == 124) // 124 = RIGHT 2
-			ft_move(mlx, 2);
-		else if (key == 125) // 125 = DOWN 3
-			ft_move(mlx, 3);
-		else if (key == 126) // 126 = UP 4
-			ft_move(mlx, 4);
-		/*
+	/*
 		if (ft_gate(*mlx))
 		{
 			ft_hide_gate(*mlx);
@@ -112,17 +99,8 @@ int	ft_key_event_handler(int key, t_mlx **mlx)
 			else
 				exit(0);
 		}
-		*/
-	}
-	else if (key == 49)
-	{
-		if ((*mlx)->draw)
-			(*mlx)->draw--;
-		else
-			(*mlx)->draw++;
-	}
-	else
-		printf("Key (%d)\n", key);
+	*/
+	printf("Key Released : %d (not binded)\n", key);
 	return (1);
 }
 
@@ -140,6 +118,31 @@ int	ft_exit(int key, t_mlx **mlx)
 	return (0);
 }
 
+int	ft_key_pressed_event_handler(int key, t_mlx **mlx)
+{
+	mlx_do_key_autorepeaton(*mlx);
+	if (key == ECHAP_KEY)
+	{
+		printf("Key Pressed : %d (exit ->[])\n", key);
+		exit(0);
+	}
+	if (key == LEFT_KEY || key == RIGHT_KEY || key == UP_KEY || key == DOWN_KEY)
+	{
+		ft_hide_player(*mlx);
+		if (key == LEFT_KEY)
+			ft_move(mlx, LEFT);
+		else if (key == RIGHT_KEY)
+			ft_move(mlx, RIGHT);
+		else if (key == DOWN_KEY)
+			ft_move(mlx, DOWN);
+		else if (key == UP_KEY)
+			ft_move(mlx, UP);
+		printf("Key Pressed : %d (move player)\n", key);
+	}
+	else
+		printf("Key Pressed : %d (not binded)\n", key);
+	return (0);
+}
 /*
  ** MAIN
  */
@@ -165,9 +168,10 @@ int	main(void)
 	mlx->player = ft_new_player((mlx->x)/2 + 1, (mlx->y)/2 - 8, 22, "ozuk", 0x00F87D99);
 	ft_display_grid(mlx);
 	ft_display_player(mlx);
-	mlx_key_hook(mlx->win, &ft_key_event_handler, &mlx);
+	mlx_key_hook(mlx->win, &ft_key_release_event_handler, &mlx);
 	mlx_mouse_hook(mlx->win, &ft_attack, &mlx);
-	mlx_hook(mlx->win, 17, (1L<<17), &ft_exit, &mlx);
+	mlx_hook(mlx->win, 2, 0, &ft_key_pressed_event_handler, &mlx);
+	mlx_hook(mlx->win, 17, 0, &ft_exit, &mlx);
 	mlx_loop(mlx->mlx);
 	return (0);
 }
