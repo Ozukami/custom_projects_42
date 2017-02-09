@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 07:43:09 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/09 10:58:47 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,30 @@ t_rect	*ft_new_rect(int x1, int y1, int x2, int y2)
 	return (new);
 }
 
+int		**ft_init_map(int x, int y)
+{
+	int		**map;
+	int		i;
+	int		j;
+
+	map = malloc(sizeof(int *) * (y + 1));
+	i = 0;
+	while (i < y)
+	{
+		map[i] = malloc(sizeof(int) * (x + 1));
+		j = 0;
+		while (j < x)
+		{
+			map[i][j] = 1;
+			j++;
+		}
+		map[i][j] = 0;
+		i++;
+	}
+	map[i][0] = 0;
+	return (map);
+}
+
 t_mlx	*ft_new_mlx(int x, int y, char *title)
 {
 	t_mlx	*new;
@@ -44,6 +68,7 @@ t_mlx	*ft_new_mlx(int x, int y, char *title)
 	new->gates = NULL;
 	new->player = NULL;
 	new->grid = ft_new_rect(20, 100, x - 20, y - 20);
+	//new->map = ft_init_map(x, y);
 	return (new);
 }
 
@@ -84,4 +109,13 @@ void	ft_add_gate(t_mlx **mlx, t_gate *new_gate)
 {
 	new_gate->next = (*mlx)->gates;
 	(*mlx)->gates = new_gate;
+}
+
+/*
+ * GET FUNCTIONS
+ */
+
+int		ft_get_i_map(int i, int i_border, int size)
+{
+	return (((i - (i_border)) / size));
 }

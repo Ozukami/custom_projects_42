@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:34:33 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 09:20:33 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/09 10:59:06 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ typedef struct	s_mlx
 	t_gate		*gates;
 	t_player	*player;
 	t_rect		*grid;
+	int			**map;
 }				t_mlx;
 
 t_mlx		*ft_new_mlx(int x, int y, char *title);
@@ -188,7 +189,10 @@ t_player	*ft_new_player(int x, int y, int size, char *name, int color);
 t_rect		*ft_new_rect(int x1, int y1, int x2, int y2);
 t_gate		*ft_new_gate(int x, int y, int col, int line,
 		int color, char *title);
+
 void		ft_add_gate(t_mlx **mlx, t_gate *new_gate);
+
+int			ft_get_i_map(int i, int i_border, int size);
 
 void		ft_display_gate(t_mlx *mlx);
 void		ft_hide_gate(t_mlx *mlx);
