@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 03:27:07 by qumaujea         ###   ########.fr       */
+/*   Updated: 2017/02/10 03:54:35 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,49 @@ void		ft_add_place(t_place **list, t_place *new)
 	*list = new;
 }
 
+// GET SMTHNG
+
 void		ft_get_value(t_info *info, t_place place, int fd)
 {
 	(void)info;
 	(void)place;
 	(void)fd;
+}
+
+void	ft_get_piece_size(t_info **info, char *line)
+{
+	int		i;
+
+	i = 0;
+	while (line[i])
+	{
+		if (line[i] > '0' && line[i] < '9')
+		{
+			(*info)->x_piece =	ft_atoi(line + i);
+			while (line[i] > '0' && line[i] < '9')
+				i++;
+			(*info)->y_piece = ft_atoi(line + i);
+			break ;
+		}
+		i++;
+	}
+	(*info)->piece = ft_memalloc((sizeof(char *)) * ((*info)->x_piece + 1));
+	((*info)->piece)[(*info)->x_piece] = 0;
+}
+
+void		ft_get_piece(t_info **info)
+{
+	int		i;
+	char	*line;
+
+	line = NULL;
+	i = 0;
+	while (i < (*info)->x_piece)
+	{
+		get_next_line(0, &line);
+		((*info)->piece)[i] = ft_strdup(line);
+		i++;
+	}
 }
 
 int			ft_check_place(t_info *info, int x, int y)
@@ -119,7 +157,7 @@ void		ft_get_place(t_info *info, int fd)
 		while ((info->map)[x][y])
 		{
 			//dprintf(fd, "	> CHECK at {%d,%d}", x, y);
-			if (ft_check_place(info, x, y, fd))
+			if (ft_check_place(info, x, y))
 			{
 				//dprintf(fd, "		> OK");
 				ft_add_place(&list, ft_new_place(x, y));
@@ -190,18 +228,61 @@ void	ft_map_size(t_info **info, char *line)
 	}
 }
 
+void	ft_wild_ennemy_appears(t_info **info)
+{
+	int		x;
+	int		y;
+
+	x = 0;
+	y = 0;
+	if ((*info)->map_prev)
+	{
+		x = 0;
+		while (((*info)->map)[x])
+		{	
+			y = 0;
+			while (((*info)->map)[x][y])
+			{
+				if (((*info)->map)[x][y] != ((*info)->map_prev)[x][y])
+				{
+					(*info)->x_side = x;
+					(*info)->y_side = y;
+					((*info)->map_prev)[x][y] = ((*info)->map)[x][y];
+				}
+				y++;
+			}
+			x++;
+		}
+	}
+}
+
+void	ft_get_map(t_info **info, int t)
+{
+	int		i;
+	char	*line;
+
+	i = 0;
+	line = NULL;
+	while (i < (*info)->x_map)
+	{
+		get_next_line(0, &line);
+		if (!t)
+			((*info)->map_prev)[i] = ft_strdup(ft_strsub(line, 4, (*info)->x_map));
+		else
+			free(((*info)->map)[i]);
+		((*info)->map)[i] = ft_strdup(ft_strsub(line, 4, (*info)->x_map));
+		i++;
+	}
+}
+
 int		main(void)
 {
 	char	*path = "log.txt";
 	int		fd = open(path, O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	int	nb_piece = 0;
 
 	t_info	*info;
 	char	*line;
-	int		i;
-	int		x;
-	int		y;
 	int		t;
 
 	// First ligne : exec shit
@@ -222,16 +303,8 @@ int		main(void)
 
 	// Get map and map_prev
 	get_next_line(0, &line);
-	i = 0;
-	while (i < info->x_map)
-	{
-		get_next_line(0, &line);
-		(info->map)[i] = ft_strdup(ft_strsub(line, 4, info->x_map));
-		(info->map_prev)[i] = ft_strdup(ft_strsub(line, 4, info->x_map));
-		i++;
-	}
-
 	t = 0;
+	ft_get_map(&info, t);
 	while (1)
 	{
 		// Only from turn 2 : updates the map
@@ -240,80 +313,15 @@ int		main(void)
 			if (get_next_line(0, &line))
 				dprintf(fd, "> %s\n", line);
 			get_next_line(0, &line);
-			i = 0;
-			while (i < info->x_map)
-			{
-				get_next_line(0, &line);
-				free((info->map)[i]);
-				(info->map)[i] = ft_strdup(ft_strsub(line, 4, info->x_map));
-				i++;
-			}
+			ft_get_map(&info, t);
 		}
-		if (debug)
-			ft_display_map(info->map, fd);
-
+		ft_wild_ennemy_appears(&info);
 		// Diff(map, map_prev) : spot new ennemies + updates map_prev
-		if (info->map_prev)
-		{
-			x = 0;
-			while ((info->map)[x])
-			{	
-				y = 0;
-				while ((info->map)[x][y])
-				{
-					if ((info->map)[x][y] != (info->map_prev)[x][y])
-					{
-						//dprintf(fd, "	< A wild ennemi appears in [%d, %d] >\n", x, y);
-						info->x_side = x;
-						info->y_side = y;
-						(info->map_prev)[x][y] = (info->map)[x][y];
-					}
-					y++;
-				}
-				x++;
-			}
-		}
-
-		// Get x_piece
 		get_next_line(0, &line);
-		i = 0;
-		while (line[i])
-		{
-			if (line[i] > '0' && line[i] < '9')
-			{
-				info->x_piece =	ft_atoi(line + i);
-				while (line[i] > '0' && line[i] < '9')
-					i++;
-				info->y_piece =	ft_atoi(line + i);
-				dprintf(fd, "Piece (Maj) : [%d|%d]\n", info->x_piece, info->y_piece);
-				break ;
-			}
-			i++;
-		}
-		info->piece = ft_memalloc((sizeof(char *)) * (info->x_piece + 1));
-		(info->piece)[info->x_piece] = 0;
-
+		ft_get_piece_size(&info, line);
 		// Get piece
-		i = 0;
-		while (i < info->x_piece)
-		{
-			get_next_line(0, &line);
-			(info->piece)[i] = ft_strdup(line);
-			i++;
-		}
-
-		if (debug)
-			ft_display_map(info->piece, fd);
-
+		ft_get_piece(&info);
 		ft_get_place(info, fd);
-		x = 0;
-		y = 0;
-		if (debug)
-		{
-			dprintf(fd, "%d %d\n", x, y);
-			dprintf(fd, "nb_piece = %d\n", ++nb_piece);
-		}
-		//		dprintf(1, "%d %d\n", x, y);
 	}
 	return (0);
 }
