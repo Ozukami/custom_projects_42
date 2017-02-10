@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 01:38:29 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 05:32:17 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int		**ft_init_map(int x, int y)
 	return (map);
 }
 
-t_mlx	*ft_new_mlx(int x, int y, char *title)
+t_mlx	*ft_new_mlx(int	x, int y, char *title)
 {
 	t_mlx	*new;
 

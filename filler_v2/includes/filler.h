@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 04:33:41 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 05:40:20 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct	s_info
 	int			y_piece;
 	int			x_side;
 	int			y_side;
+	int			t;
 }				t_info;
 
 typedef struct	s_place
@@ -78,7 +79,7 @@ typedef struct	s_mlx
 	t_rect		*grid;
 }				t_mlx;
 
-t_mlx		*ft_new_mlx(t_coord *couple, char *title);
+t_mlx		*ft_new_mlx(int x, int y, char *title);
 
 int			ft_get_i_map(int i, int i_border, int size);
 int			ft_get_i_grid(int i, int i_border, int size);
@@ -99,5 +100,13 @@ void		ft_draw_square(t_mlx *mlx, int x, int y,
 		int size, int color);
 
 int			ft_key_event_handler(int key, t_mlx **mlx);
+
+typedef struct	s_data
+{
+	t_info		*info;
+	t_mlx		*mlx;
+}				t_data;
+
+t_data		*ft_new_data(t_info *info, t_mlx *mlx);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 04:48:21 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 05:47:18 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,7 @@ void		ft_get_map(t_info **info, int t)
 	}
 }
 
+/*
 void		ft_process(t_info **info, int t)
 {
 	char	*line;
@@ -246,11 +247,41 @@ void		ft_process(t_info **info, int t)
 		ft_get_place(*info);
 	}
 }
+*/
+
+int			ft_process(t_data **data)
+{
+	char	*line;
+
+	line = NULL;
+	if ((((*data)->info)->t)++)
+	{
+		get_next_line(0, &line);
+		get_next_line(0, &line);
+		ft_get_map(&((*data)->info), ((*data)->info)->t);
+	}
+	ft_wild_ennemy_appears(&((*data)->info));
+	get_next_line(0, &line);
+	ft_get_piece_size(&((*data)->info), line);
+	ft_get_piece(&((*data)->info));
+	ft_get_place((*data)->info);
+
+	sleep(1);
+	return (1);
+}
+
+int			ft_exit()
+{
+	exit(0);
+	return (1);
+}
 
 int			main(void)
 {
 	t_info	*info;
 	char	*line;
+	t_mlx	*mlx;
+	t_data	*data;
 
 	get_next_line(0, &line);
 	info = ft_new_info(((line[10] == '1') ? 'o' : 'x'));
@@ -262,6 +293,11 @@ int			main(void)
 	(info->map_prev)[info->x_map] = 0;
 	get_next_line(0, &line);
 	ft_get_map(&info, 0);
-	ft_process(&info, 0);
+	//ft_process(&info, 0);
+	mlx = ft_new_mlx((info->x_map * 20) + 20, (info->y_map * 20) + 20, "Filler");
+	data = ft_new_data(info, mlx);
+	mlx_hook(mlx->win, 17, 0, &ft_exit, &data);
+	mlx_loop_hook(mlx->mlx, &ft_process, &data);
+	mlx_loop(mlx->mlx);
 	return (0);
 }

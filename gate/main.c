@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 06:29:27 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 01:38:33 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 05:22:46 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,13 @@ int	ft_key_pressed_event_handler(int key, t_mlx **mlx)
 	return (0);
 }
 
+int		ft_test(t_mlx **mlx)
+{
+	sleep(1);
+	printf("\n");
+	return (1);
+}
+
 /*
  ** MAIN
  */
@@ -176,9 +183,11 @@ int	main(void)
 	mlx = ft_new_mlx(1040, 820, "G A T E");
 	//ft_add_player(mlx, );
 	mlx->player = ft_new_player((mlx->x)/2 + 1, (mlx->y)/2 - 8, 22, "ozuk", 0x00F87D99);
+	/*
 	int	x_map = ft_get_i_map((mlx->player)->x - 1, 20, 25);
 	int	y_map = ft_get_i_map((mlx->player)->y - 1, 100, 25);
-	//printf("START\n[%d,%d]\n", x_map, y_map);
+	printf("START\n[%d,%d]\n", x_map, y_map);
+	*/
 	//(mlx->map)[][] = ;
 	int	x_gate;
 	int	y_gate;

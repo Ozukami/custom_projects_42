@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 02:56:16 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 05:43:08 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,29 @@ int		**ft_init_map(t_coord *coord1)
 	return (map);
 }
 
-t_mlx	*ft_new_mlx(t_coord *couple, char *title)
+t_mlx	*ft_new_mlx(int x, int y, char *title)
 {
 	t_mlx	*new;
 
 	new	= malloc(sizeof(t_mlx));
 	new->mlx = mlx_init();
-	new->win = mlx_new_window(new->mlx, couple->x, couple->y, title);
-	new->x_size = couple->x;
-	new->y_size = couple->y;
+	new->win = mlx_new_window(new->mlx, x, y, title);
+	new->x_size = x;
+	new->y_size = y;
 	new->bg_color = 0x00000000;
 	new->grid = ft_new_rect(ft_new_coord(20, 20),
-			ft_new_coord(couple->x - 20, couple->y - 20), 0x00FFFFFF);
-	new->map = ft_init_map(ft_new_coord(couple->x, couple->y));
+			ft_new_coord(x - 20, y - 20), 0x00FFFFFF);
+	new->map = ft_init_map(ft_new_coord(x, y));
+	return (new);
+}
+
+t_data	*ft_new_data(t_info *info, t_mlx *mlx)
+{
+	t_data	*new;
+
+	new = malloc(sizeof(t_data));
+	new->info = info;
+	new->mlx = mlx;
 	return (new);
 }
 
