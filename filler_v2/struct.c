@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 05:43:08 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 10:16:19 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ int		**ft_init_map(t_coord *coord1)
 	int		j;
 	t_coord	*coord2;
 
-	coord2 = ft_new_coord(ft_get_i_map(coord1->x, 20, 25),
-			ft_get_i_map(coord1->y, 100, 25));
+	coord2 = ft_new_coord(ft_get_i_map(coord1->x, 20, 5),
+			ft_get_i_map(coord1->y, 20, 5));
 	map = malloc(sizeof(int *) * ((coord2->y)));
 	i = 0;
 	while (i < (coord2->y))

@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 05:40:20 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 09:37:55 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ t_place			*ft_new_place(int x, int y);
 void			ft_add_place(t_place **list, t_place *new);
 
 int				ft_check_place(t_info *info, int x, int y, int verif);
-void			ft_get_place(t_info *info);
 
 typedef struct	s_coord
 {
@@ -56,6 +55,7 @@ typedef struct	s_coord
 	int			y;
 }				t_coord;
 
+t_coord			*ft_get_place(t_info *info);
 t_coord			*ft_new_coord(int x, int y);
 void			ft_free_coord(t_coord **coord);
 

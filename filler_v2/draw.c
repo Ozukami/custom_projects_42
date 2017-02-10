@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:40:17 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 02:51:06 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 10:16:40 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,14 @@ void	ft_display_grid(t_mlx *mlx)
 
 	y = 0;
 	x_border = 20;
-	y_border = 100;
-	while (y < (((mlx->y_size - (y_border + x_border)) / 25)))
+	y_border = 20;
+	while (y < (((mlx->y_size - (y_border + x_border)) / 5)))
 	{
 		x = 0;
-		while (x < (((mlx->x_size - 2 * x_border)) / 25))
+		while (x < (((mlx->x_size - 2 * x_border)) / 5))
 		{
-			ft_draw_square(mlx, (x * 25) + x_border,
-					(y * 25) + y_border, 25, 0x00FFFFFF);
+			ft_draw_square(mlx, (x * 5) + x_border,
+					(y * 5) + y_border, 5, 0x00FFFFFF);
 			x++;
 		}
 		y++;
