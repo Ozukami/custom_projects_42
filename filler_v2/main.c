@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 05:47:18 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 06:24:02 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ void		ft_get_piece_size(t_info **info, char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (line[i] > '0' && line[i] < '9')
+		if (line[i] >= '0' && line[i] <= '9')
 		{
 			(*info)->x_piece = ft_atoi(line + i);
-			while (line[i] > '0' && line[i] < '9')
+			while (line[i] >= '0' && line[i] <= '9')
 				i++;
 			(*info)->y_piece = ft_atoi(line + i);
 			break ;
@@ -166,10 +166,10 @@ void		ft_map_size(t_info **info, char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (line[i] > '0' && line[i] < '9')
+		if (line[i] >= '0' && line[i] <= '9')
 		{
 			(*info)->x_map = ft_atoi(line + i);
-			while (line[i] > '0' && line[i] < '9')
+			while (line[i] >= '0' && line[i] <= '9')
 				i++;
 			(*info)->y_map = ft_atoi(line + i);
 			return ;
