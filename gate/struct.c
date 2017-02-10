@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 00:08:09 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 01:38:29 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_mlx	*ft_new_mlx(int x, int y, char *title)
 	new->pos_y = y / 2;
 	new->draw = 1;
 	new->color = 0x00000000;
-	new->gates = NULL;
+	new->gate = NULL;
 	new->player = NULL;
 	new->grid = ft_new_rect(20, 100, x - 20, y - 20);
 	new->map = ft_init_map(x, y);
@@ -84,10 +84,7 @@ t_gate	*ft_new_gate(int x, int y, int col, int line, int color, char *title)
 
 	new = malloc(sizeof(t_gate));
 	new->title = title;
-	new->x = x;
-	new->y = y;
-	new->col = col;
-	new->line = line;
+	new->rect = ft_new_rect(x, y, x + col, y + line);
 	new->color = color;
 	new->next = NULL;
 	return (new);
@@ -113,15 +110,30 @@ t_player	*ft_new_player(int x, int y, int size, char *name, int color)
 
 void	ft_add_gate(t_mlx **mlx, t_gate *new_gate)
 {
-	new_gate->next = (*mlx)->gates;
-	(*mlx)->gates = new_gate;
+	new_gate->next = (*mlx)->gate;
+	(*mlx)->gate = new_gate;
 }
 
 /*
  * GET FUNCTIONS
  */
 
+/*
+ * i = x ou y
+ * i_border = x_border ou y_border
+ * size = size d'1 cellule
+ */
 int		ft_get_i_map(int i, int i_border, int size)
 {
 	return (((i - (i_border)) / size));
+}
+
+/*
+ * i = x ou y
+ * i_border = x_border ou y_border
+ * size = size d'1 cellule
+ */
+int		ft_get_i_grid(int i, int i_border, int size)
+{
+	return ((i * size) + i_border);
 }

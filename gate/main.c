@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 06:29:27 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 00:03:50 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 01:38:33 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ int	ft_check_grid_bounds(t_player *player, t_rect *rect, int dir)
 
 int	ft_gate(t_mlx *mlx)
 {
-	if (((mlx->player)->x >= (mlx->gates)->x
-			&& (mlx->player)->x <= (mlx->gates)->x + (mlx->gates)->col
-			&& (mlx->player)->y >= (mlx->gates)->y
-			&& (mlx->player)->y <= (mlx->gates)->y + (mlx->gates)->line)
-			|| ((mlx->player)->x + (mlx->player)->size >= (mlx->gates)->x
-			&& (mlx->player)->x + (mlx->player)->size <= (mlx->gates)->x + (mlx->gates)->col
-			&& (mlx->player)->y + (mlx->player)->size >= (mlx->gates)->y
-			&& (mlx->player)->y + (mlx->player)->size <= (mlx->gates)->y + (mlx->gates)->line))
+	if (((mlx->player)->x >= ((mlx->gate)->rect)->x1
+			&& (mlx->player)->x <= ((mlx->gate)->rect)->x1 + ((mlx->gate)->rect)->x2
+			&& (mlx->player)->y >= ((mlx->gate)->rect)->y1
+			&& (mlx->player)->y <= ((mlx->gate)->rect)->y1 + ((mlx->gate)->rect)->y2)
+			|| ((mlx->player)->x + (mlx->player)->size >= ((mlx->gate)->rect)->x1
+			&& (mlx->player)->x + (mlx->player)->size <= ((mlx->gate)->rect)->x1 + ((mlx->gate)->rect)->x2
+			&& (mlx->player)->y + (mlx->player)->size >= ((mlx->gate)->rect)->y1
+			&& (mlx->player)->y + (mlx->player)->size <= ((mlx->gate)->rect)->y1 + ((mlx->gate)->rect)->y2))
 		return (1);
 	return (0);
 }
@@ -102,8 +102,8 @@ int	ft_key_release_event_handler(int key, t_mlx **mlx)
 		{
 			ft_hide_gate(*mlx);
 			ft_display_player(*mlx);
-			(*mlx)->gates = ((*mlx)->gates)->next;
-			if ((*mlx)->gates)
+			(*mlx)->gate = ((*mlx)->gate)->next;
+			if ((*mlx)->gate)
 				ft_display_gate(*mlx);
 			else
 				exit(0);
@@ -180,7 +180,16 @@ int	main(void)
 	int	y_map = ft_get_i_map((mlx->player)->y - 1, 100, 25);
 	//printf("START\n[%d,%d]\n", x_map, y_map);
 	//(mlx->map)[][] = ;
+	int	x_gate;
+	int	y_gate;
+	x_gate = ft_get_i_grid(12, 20, 25);
+	y_gate = ft_get_i_grid(9, 100, 25) + 1;
+	int x2 = ft_get_i_grid(2, 0, 25) - 1;
+	int y2 = ft_get_i_grid(3, 0, 25) - 1;
+	mlx->gate = ft_new_gate(x_gate, y_gate, x2,
+			y2, 0x00FF0000, "test");
 	ft_display_grid(mlx);
+	ft_display_gate(mlx);
 	ft_display_player(mlx);
 	mlx_key_hook(mlx->win, &ft_key_release_event_handler, &mlx);
 	mlx_mouse_hook(mlx->win, &ft_attack, &mlx);

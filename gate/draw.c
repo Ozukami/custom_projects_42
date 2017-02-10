@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:40:17 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/09 05:46:36 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 01:38:28 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,16 +89,18 @@ void	ft_draw_square(t_mlx *mlx, int x, int y, int size, int color)
 
 void		ft_display_gate(t_mlx *mlx)
 {
-	ft_fill_rectangle(mlx, (mlx->gates)->x, (mlx->gates)->y,
-			(mlx->gates)->col, (mlx->gates)->line, (mlx->gates)->color);
-	mlx_string_put(mlx->mlx, mlx->win, (mlx->gates)->x, (mlx->gates)->y,
-			0x00000000, (mlx->gates)->title);
+	ft_fill_rectangle(mlx, ((mlx->gate)->rect)->x1, ((mlx->gate)->rect)->y1,
+			((mlx->gate)->rect)->x2 - ((mlx->gate)->rect)->x1,
+			((mlx->gate)->rect)->y2 - ((mlx->gate)->rect)->y1,
+			(mlx->gate)->color);
+	mlx_string_put(mlx->mlx, mlx->win, ((mlx->gate)->rect)->x1,
+			((mlx->gate)->rect)->y1, 0x00000000, (mlx->gate)->title);
 }
 
 void		ft_hide_gate(t_mlx *mlx)
 {
-	ft_fill_rectangle(mlx, (mlx->gates)->x, (mlx->gates)->y,
-			(mlx->gates)->col, (mlx->gates)->line, 0x00000000);
+	ft_fill_rectangle(mlx, ((mlx->gate)->rect)->x1, ((mlx->gate)->rect)->y1,
+			((mlx->gate)->rect)->x2, ((mlx->gate)->rect)->y2, 0x00000000);
 }
 
 void		ft_display_player(t_mlx *mlx)
