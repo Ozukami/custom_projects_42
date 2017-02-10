@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 03:05:45 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/02/10 03:27:07 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void		ft_get_value(t_info *info, t_place place, int fd)
 	(void)fd;
 }
 
-int			ft_check_place(t_info *info, int x, int y, int fd)
+int			ft_check_place(t_info *info, int x, int y)
 {
 	int		i;
 	int		j;
@@ -79,46 +79,27 @@ int			ft_check_place(t_info *info, int x, int y, int fd)
 	verif = 0;
 	if (x + info->x_piece > info->x_map
 			|| y + info->y_piece > info->y_map)
-	{
-		//dprintf(fd, "	>> Failed : map out of bounds\n");
 		return (0);
-	}
 	while ((info->piece)[i])
 	{
 		j = 0;
 		while ((info->piece)[i][j])
 		{
 			if ((info->piece)[i][j] != '.')
-			{
 				if ((info->map)[i + x][j + y] != '.')
 				{
 					if ((info->map)[i + x][j + y] != info->player
 							&& (info->map)[i + x][j + y] != info->player - 32)
-					{
-						//dprintf(fd, "	>> Failed : enemy found ! %c VS %c\n",
-						//		info->player, (info->map)[i + x][j + y]);
 						return (0);
-					}
-					else
-					{
-						if (verif++)
-						{
-							//dprintf(fd, "	>> Failed : too much TK\n");
-							return (0);
-						}
-					}
+					else if (verif++)
+						return (0);
 				}
-			}
 			j++;
 		}
 		i++;
 	}
 	if (verif)
-	{
-		dprintf(fd, "	>> SUCCES !\n");
 		return (1);
-	}
-	//dprintf(fd, "	>> Failed : not enough friends :(\n");
 	return (0);
 }	
 
