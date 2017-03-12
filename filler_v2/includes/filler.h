@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 09:37:55 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/12 04:40:38 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "libft.h"
 # include "mlx.h"
-# include <stdio.h> //
 # include <fcntl.h>
+# include <stdio.h> //
 
 typedef struct	s_info
 {

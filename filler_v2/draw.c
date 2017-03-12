@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:40:17 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 10:16:40 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/12 05:11:50 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	ft_fill_rectangle(t_mlx *mlx, int x, int y, int col, int line, int color)
 	{
 		ft_draw_line(mlx->mlx, x, y + i, col, 1, color);
 		i++;
-	}	
+	}
 }
 
 /*

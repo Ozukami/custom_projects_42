@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 10:16:19 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/12 05:13:28 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_mlx	*ft_new_mlx(int x, int y, char *title)
 {
 	t_mlx	*new;
 
-	new	= malloc(sizeof(t_mlx));
+	new = malloc(sizeof(t_mlx));
 	new->mlx = mlx_init();
 	new->win = mlx_new_window(new->mlx, x, y, title);
 	new->x_size = x;
@@ -96,24 +96,26 @@ t_data	*ft_new_data(t_info *info, t_mlx *mlx)
 }
 
 /*
- * GET FUNCTIONS
- */
+** GET FUNCTIONS
+*/
 
 /*
- * i = x ou y
- * i_border = x_border ou y_border
- * size = size d'1 cellule
- */
+** i = x ou y
+** i_border = x_border ou y_border
+** size = size d'1 cellule
+*/
+
 int		ft_get_i_map(int i, int i_border, int size)
 {
 	return (((i - (i_border)) / size));
 }
 
 /*
- * i = x ou y
- * i_border = x_border ou y_border
- * size = size d'1 cellule
- */
+** i = x ou y
+** i_border = x_border ou y_border
+** size = size d'1 cellule
+*/
+
 int		ft_get_i_grid(int i, int i_border, int size)
 {
 	return ((i * size) + i_border);

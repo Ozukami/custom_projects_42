@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 10:12:51 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/12 05:09:55 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ void		ft_display_map(t_data **data)
 					|| (((*data)->info)->map)[y][x] == 'X')
 				ft_fill_rectangle((*data)->mlx, ft_get_i_grid(x, 20, 5),
 						ft_get_i_grid(y, 20, 5) + 1, 4, 4, 0x000000FF);
-			else 
+			else
 				ft_fill_rectangle((*data)->mlx, ft_get_i_grid(x, 20, 5),
 						ft_get_i_grid(y, 20, 5) + 1, 4, 4, 0x0000FF00);
 			x++;
@@ -266,6 +266,8 @@ void		ft_display_map(t_data **data)
 
 int			ft_process(t_data **data)
 {
+	int		x;
+	int		y;
 	char	*line;
 	t_coord	*coord;
 
@@ -283,32 +285,28 @@ int			ft_process(t_data **data)
 	coord = ft_get_place((*data)->info);
 	if (!(coord->x == -1 && coord->y == -1))
 	{
-	int		x;
-	int		y;
-
-	x = 0;
-	while ((((*data)->info)->piece)[x])
-	{
-		dprintf(2, "%d|%d\n", coord->x, coord->y);
-		y = 0;
-		while ((((*data)->info)->piece)[x][y])
+		x = 0;
+		while ((((*data)->info)->piece)[x])
 		{
-			if ((((*data)->info)->piece)[x][y] == '*')
-				ft_fill_rectangle((*data)->mlx,
-						ft_get_i_grid(coord->y + y, 20, 5),
-						ft_get_i_grid(coord->x + x, 20, 5) + 1,
-						4, 4, 0x00FF0000);
-			y++;
+			y = 0;
+			while ((((*data)->info)->piece)[x][y])
+			{
+				if ((((*data)->info)->piece)[x][y] == '*')
+					ft_fill_rectangle((*data)->mlx,
+							ft_get_i_grid(coord->y + y, 20, 5),
+							ft_get_i_grid(coord->x + x, 20, 5) + 1,
+							4, 4, 0x00FF0000);
+				y++;
+			}
+			x++;
 		}
-		x++;
-	}
 	}
 	mlx_do_sync(((*data)->mlx)->mlx);
 //	sleep(1);
 	return (1);
 }
 
-int			ft_exit()
+int			ft_exit(void)
 {
 	exit(0);
 	return (1);
@@ -331,15 +329,6 @@ int			main(void)
 	(info->map_prev)[info->x_map] = 0;
 	get_next_line(0, &line);
 	ft_get_map(&info, 0);
-	/*
-	int	i = 0;
-	while ((info->map)[i])
-	{
-		dprintf(2, "%s\n", (info->map)[i]);
-		i++;
-	}
-	*/
-	//ft_process(&info, 0);
 	mlx = ft_new_mlx((info->y_map * 5) + 40, (info->x_map * 5) + 40, "Filler");
 	data = ft_new_data(info, mlx);
 	ft_display_grid(mlx);
