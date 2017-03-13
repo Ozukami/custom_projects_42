@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/13 03:37:47 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/13 05:52:11 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,19 @@ void			ft_draw_line(t_data *data, t_coord *pos_ini, t_coord *charac,
 	}
 }
 
-void			ft_draw_rectangle(t_data *data, t_rect *rect)
+void			ft_fill_rect(t_data *data, t_rect *rect)
+{
+	int			i;
+
+	i = -1;
+	while (++i < rect->coord2->y)
+		ft_draw_line(data,
+				ft_new_coord(rect->coord1->x, rect->coord1->y + i),
+				ft_new_coord(rect->coord2->x, 1),
+				rect->color);
+}
+
+void			ft_draw_rect(t_data *data, t_rect *rect)
 {
 	ft_draw_line(data, rect->coord1,
 			ft_new_coord(R_X2, RIGHT), R_COLOR);
@@ -65,13 +77,38 @@ int				ft_process(t_data *data)
 ** DISPLAY FUN
 */
 
+void			ft_display_map(t_data *data)
+{
+	int			x;
+	int			y;
+	int			color;
+
+	printf("START ft_display_map\n");
+	y = -1;
+	while (++y < ((MAP_CURR)->x))
+	{
+		x = -1;
+		while (++x < (MAP_CURR)->y)
+		{
+			if (MAP[y][x] == 'O' || MAP[y][x] == 'o')
+				color = 0x00FF0000;
+			else if (MAP[y][x] == 'X' || MAP[y][x] == 'x')
+				color = 0x000000FF;
+			else
+				color = 0x0000FF00;
+			ft_fill_rect(data, ft_new_rect(ft_new_coord(
+							ft_get_i_grid(x, data), ft_get_i_grid(y, data)),
+						ft_new_coord(CELL_SIZE - 1, CELL_SIZE - 1), color));
+		}
+	}
+	printf("END ft_display_map\n");
+}
+
 void			ft_display_grid(t_data *data)
 {
 	int			x;
 	int			y;
 
-	printf("{%d,%d}\n", ((WIN_X - (BORDER * 2)) / CELL_SIZE), 
-			((WIN_Y - (BORDER * 2)) / CELL_SIZE));
 	y = 0;
 	while (y < (((WIN_Y - (BORDER * 2)) / CELL_SIZE)) + 1)
 	{
@@ -96,6 +133,16 @@ void			ft_display_grid(t_data *data)
 ** GET FUN
 */
 
+int				ft_get_i_grid(int i, t_data *data)
+{
+	return ((i * CELL_SIZE) + BORDER);
+}
+
+int				ft_get_i_map(int i, t_data *data)
+{
+	return ((i - BORDER) / CELL_SIZE);
+}
+
 void			ft_get_map(t_info *info, int t)
 {
 	int			i;
@@ -103,15 +150,14 @@ void			ft_get_map(t_info *info, int t)
 
 	i = 0;
 	line = NULL;
-	while (i < (info->map)->x)
+	while (i < (info->map_curr)->x)
 	{
 		get_next_line(0, &line);
-		printf("%d > %s\n", i + 4, line);
 		if (!t)
-			I_MAP_PREV[i] = ft_strsub(line, 4, (info->map)->y);
+			I_MAP_PREV[i] = ft_strsub(line, 4, (info->map_curr)->y);
 		else
-			ft_strdel(&(I_MAP[i]));
-		I_MAP[i] = ft_strsub(line, 4, (info->map)->y);
+			ft_strdel(&(I_MAP_CURR[i]));
+		I_MAP_CURR[i] = ft_strsub(line, 4, (info->map_curr)->y);
 		free(line);
 		i++;
 	}
@@ -178,7 +224,6 @@ t_grid			*ft_new_grid(int x, int y, int border, int cell_size)
 
 	if (!(new = ft_memalloc(sizeof(t_grid))))
 		exit(0);
-	printf("[%d,%d] -> [%d,%d]\n", border, border, x - border, y - border);
 	new->rect = ft_new_rect(ft_new_coord(border, border),
 			ft_new_coord(x - border, y - border), 0x00FFFFFF);
 	new->size = cell_size;
@@ -198,7 +243,7 @@ void			ft_init_map(t_info *info)
 
 	get_next_line(0, &line);
 	coord = ft_get_map_size(line);
-	info->map = ft_new_map(NULL, coord);
+	info->map_curr = ft_new_map(NULL, coord);
 	info->map_prev = ft_new_map(NULL, coord);
 	ft_strdel(&line);
 	free(coord);
@@ -218,14 +263,13 @@ t_info			*ft_init_info(void)
 	new->ennemy = ((line[10] == '1') ? 'x' : 'o');
 	ft_strdel(&line);
 	ft_init_map(new);
-	ft_strdel(&line);
 	get_next_line(0, &line);
 	printf("3 > %s\n", line);
 	ft_strdel(&line);
-	if ((!(new->map->map = ft_memalloc((new->map)->y + 1)))
-			|| (!(new->map_prev->map = ft_memalloc((new->map)->y + 1))))
+	if ((!(new->map_curr->map = ft_memalloc((new->map_curr)->y + 1)))
+			|| (!(new->map_prev->map = ft_memalloc((new->map_curr)->y + 1))))
 		exit(0);
-//	ft_get_map(new, 0);
+	ft_get_map(new, 0);
 	new->piece = NULL;
 	new->aim = NULL;
 	new->t = 0;
@@ -237,15 +281,23 @@ t_mlx_env		*ft_init_mlx_env(t_info *info,
 {
 	t_mlx_env	*new;
 
-	if ((!(new = ft_memalloc(sizeof(t_mlx_env)))
-				|| (!(new->mlx = mlx_init()))))
+	printf("start\n");
+	if ((!(new = ft_memalloc(sizeof(t_mlx_env)))))
+		printf("LA ?\n");
+	printf("test\n");
+	if (!(new->mlx = mlx_init()))
+	{
+		printf("ICI ?\n");
 		exit(0);
-	new->x = (info->map->x * cell_size) + border;
-	new->y = (info->map->y * cell_size) + border;
-	printf("[%d,%d]\n", new->x, new->y);
+	}
+	printf("	1)\n");
+	new->x = (info->map_curr->x * cell_size) + border;
+	new->y = (info->map_curr->y * cell_size) + border;
+	printf("	2)\n");
 	new->win = mlx_new_window(new->mlx, new->x, new->y, "Filler");
 	new->grid = ft_new_grid(new->x, new->y, border / 2, cell_size);
 	new->border = border / 2;
+	printf("	3)\n");
 	return (new);
 }
 
@@ -265,6 +317,7 @@ t_data			*ft_init_data()
 	if (!(new = ft_memalloc(sizeof(t_data))))
 		exit(0);
 	new->info = ft_init_info();
+	printf("SF\n");
 	new->mlx_env = ft_init_mlx_env(new->info, 5, 40);
 	new->list = NULL;
 	return (new);
@@ -279,10 +332,14 @@ int				main(void)
 	t_data		*data;
 
 	data = ft_init_data();
+	printf("T1\n");
 	ft_display_grid(data);
-//	ft_display_map(data);
+	printf("T2\n");
+	ft_display_map(data);
 	mlx_hook(WIN, 17, 0, &ft_exit, &data);
+	printf("T3\n");
 	mlx_loop_hook(MLX, &ft_process, &data);
+	printf("T4\n");
 	mlx_loop(MLX);
 	return (0);
 }

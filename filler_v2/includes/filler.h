@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/13 01:54:26 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/13 05:07:23 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,14 @@
 # define INFO		(data->info)
 # define PLAYER		((data->info)->player)
 # define ENNEMY		((data->info)->ennemy)
-# define MAP		((data->info)->map)
+# define MAP_CURR	((data->info)->map_curr)
+# define MAP		(((data->info)->map_curr)->map)
 # define MAP_PREV	((data->info)->map_prev)
 # define PIECE		((data->info)->piece)
 # define AIM		((data->info)->aim)
 # define TURN		((data->info)->t)
 
-# define I_MAP		(((info)->map)->map)
+# define I_MAP_CURR	(((info)->map_curr)->map)
 # define I_MAP_PREV	(((info)->map_prev)->map)
 
 # define LIST		(data->list)
@@ -102,7 +103,7 @@ typedef struct		s_info
 {
 	char			player;
 	char			ennemy;
-	t_map			*map;
+	t_map			*map_curr;
 	t_map			*map_prev;
 	t_map			*piece;
 	t_map			*aim;
@@ -128,6 +129,8 @@ t_coord				*ft_new_coord(int x, int y);
 t_rect				*ft_new_rect(t_coord *coord1, t_coord *coord2,
 		int color);
 t_grid				*ft_new_grid(int x, int y, int border, int cell_size);
+int					ft_get_i_map(int i, t_data *data);
+int					ft_get_i_grid(int i, t_data *data);
 
 /*
 t_mlx				*ft_new_mlx(int x, int y, char *title);

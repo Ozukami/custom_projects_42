@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/20 09:02:16 by apoisson          #+#    #+#             */
-/*   Updated: 2016/12/05 10:04:31 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/13 05:47:42 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/uio.h>
 # include <unistd.h>
 
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 16
 
 int					get_next_line(const int fd, char **line);
 
