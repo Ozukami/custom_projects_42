@@ -6,7 +6,7 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/02/10 09:15:53 by apoisson         ###   ########.fr        #
+#    Updated: 2017/03/13 00:00:40 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,11 @@ libft.a:
 	@make -C libft/
 	@mv libft/libft.a .
 	@make clean -C libft/
+
+new: libft.a filler.c
+	@printf "\033[0;36m> Compiling filler (Test Build)\033[0m"
+	@gcc $(FLAGS) -I includes/ -L. -lft filler.c -o test -lmlx -framework OpenGL -framework AppKit
+	@printf "\033[0;32m OK\n\033[0m"
 
 test: $(NAME)
 	@printf "\033[0;31m- Executing filler -\n\033[0m"
