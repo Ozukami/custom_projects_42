@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/14 04:51:21 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/14 06:10:11 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ void			ft_display_map(t_data *data)
 
 	printf("START ft_display_map\n");
 	y = -1;
-	while (++y < ((MAP_CURR)->x))
+	while (++y < ((MAP_CURR)->y))
 	{
 		x = -1;
-		while (++x < (MAP_CURR)->y)
+		while (++x < (MAP_CURR)->x)
 		{
 			if (MAP[y][x] == 'O' || MAP[y][x] == 'o')
 				color = 0x00FF0000;
@@ -100,6 +100,7 @@ void			ft_display_map(t_data *data)
 							ft_get_i_grid(x, data), ft_get_i_grid(y, data)),
 						ft_new_coord(CELL_SIZE - 1, CELL_SIZE - 1), color));
 		}
+		printf("	%d\n", y);
 	}
 	printf("END ft_display_map\n");
 }
@@ -143,24 +144,22 @@ int				ft_get_i_map(int i, t_data *data)
 	return ((i - BORDER) / CELL_SIZE);
 }
 
-void			ft_get_map(t_info *info, int t)
+void			ft_get_map(t_data *data)
 {
 	int			i;
 	char		*line;
 
 	i = 0;
 	line = NULL;
-	while (i < (info->map_curr)->x)
+	while (i < (MAP_CURR)->y)
 	{
 		get_next_line(0, &line);
-		if (!t)
-			I_MAP_PREV[i] = ft_strsub(line, 4, (info->map_curr)->y);
-		/*
+		if (!(TURN++))
+			(MAP_PREV->map)[i] = ft_strsub(line, 4, MAP_CURR->x);
 		else
-			ft_strdel(&(I_MAP_CURR[i]));
-			*/
-		I_MAP_CURR[i] = ft_strsub(line, 4, (info->map_curr)->y);
-		//free(line);
+			ft_strdel(&(MAP[i]));
+		MAP[i] = ft_strsub(line, 4, MAP_CURR->x);
+		free(line);
 		i++;
 	}
 }
@@ -185,15 +184,17 @@ t_coord			*ft_get_map_size(char *line)
 ** NEW FUN
 */
 
-t_map			*ft_new_map(char **map, t_coord *coord)
+t_map			*ft_new_map(t_coord *coord)
 {
 	t_map		*new;
 
 	if (!(new = ft_memalloc(sizeof(t_map))))
 		exit(0);
-	new->map = map;
 	new->x = coord->x;
 	new->y = coord->y;
+	if (!(new->map = ft_memalloc(sizeof(char *) * new->y + 1)))
+		exit(0);
+	(new->map)[new->y] = 0;
 	return (new);
 }
 
@@ -246,8 +247,8 @@ void			ft_init_map(t_info *info)
 
 	get_next_line(0, &line);
 	coord = ft_get_map_size(line);
-	info->map_curr = ft_new_map(NULL, coord);
-	info->map_prev = ft_new_map(NULL, coord);
+	info->map_curr = ft_new_map(coord);
+	info->map_prev = ft_new_map(coord);
 	
 	ft_strdel(&line);
 	free(coord);
@@ -326,8 +327,8 @@ void			get_map_size(t_data *data, char *line)
 	y = ft_atoi(line + i);
 	WIN_X = x * SIZE + BORDER * 2;
 	WIN_Y = y * SIZE + BORDER * 2;
-	MAP_CURR = ft_new_map(NULL, ft_new_coord(x, y));
-	MAP_PREV = ft_new_map(NULL, ft_new_coord(x, y));
+	MAP_CURR = ft_new_map(ft_new_coord(x, y));
+	MAP_PREV = ft_new_map(ft_new_coord(x, y));
 }
 
 int				main(void)
@@ -372,9 +373,44 @@ int				main(void)
 	printf("|	-> DISPLAYING GRID...\n");
 	ft_display_grid(data);
 
+	// SKIPING COLUMNS LINE
+	get_next_line(0, &line);
+	ft_strdel(&line);
+	if (TURN)
+	{
+		get_next_line(0, &line);
+		ft_strdel(&line);
+	}
+
+	// GET MAP
+	printf("|	-> GETTING MAP...\n");
+	ft_get_map(data);
+
+	// DISPLAY MAP
+	/*
+	int		i = 0;
+	while (MAP[i])
+	{
+		printf("%s	%d\n", MAP[i], i);
+		i++;
+	}
+	*/
+	ft_display_map(data);
+	printf("|	-> DISPLAYING MAP...\n");
+	
+	// DIFF MAP - MAP_PREV
+	//printf("|	-> SPOTTING ENNEMIES...\n");
+
+	// GET PIECE
+	//printf("|	-> GETTING PIECE...\n");
+	get_next_line(0, &line);
+	
+	// PROCESS
+	//printf("|	-> PROCESSING...\n");
+
 	mlx_hook(WIN, 2, 0, &ft_exit, 0);
 	mlx_hook(WIN, 17, 0, &ft_exit, 0);
-	mlx_loop_hook(MLX, &ft_exit, 0);
+	//mlx_loop_hook(MLX, &ft_exit, 0);
 	mlx_loop(MLX);
 
 	printf("| END |\n");
