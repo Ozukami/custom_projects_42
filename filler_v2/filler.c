@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/13 05:52:11 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/14 04:51:21 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ void			ft_draw_line(t_data *data, t_coord *pos_ini, t_coord *charac,
 	int			i;
 
 	i = 0;
-	while (i < charac->x)
+	while (i < charac->x + 1)
 	{
+		mlx_pixel_put(MLX, WIN, pos_ini->x, pos_ini->y, color);
 		pos_ini->x += ((charac->y == RIGHT) ? 1 : 0);
 		pos_ini->x += ((charac->y == LEFT) ? -1 : 0);
 		pos_ini->y += ((charac->y == DOWN) ? 1 : 0);
 		pos_ini->y += ((charac->y == UP) ? -1 : 0);
-		mlx_pixel_put(MLX, WIN, pos_ini->x, pos_ini->y, color);
 		i++;
 	}
 }
@@ -110,11 +110,11 @@ void			ft_display_grid(t_data *data)
 	int			y;
 
 	y = 0;
-	while (y < (((WIN_Y - (BORDER * 2)) / CELL_SIZE)) + 1)
+	while (y < (((WIN_Y - 2 * BORDER)) / CELL_SIZE) + 1)
 	{
 		ft_draw_line(data,
 				ft_new_coord(BORDER, (y * CELL_SIZE) + BORDER),
-				ft_new_coord(WIN_Y - (BORDER *2), RIGHT),
+				ft_new_coord(WIN_X - (BORDER *2), RIGHT),
 				0x00FFFFFF);
 		y++;
 	}
@@ -123,7 +123,7 @@ void			ft_display_grid(t_data *data)
 	{
 		ft_draw_line(data,
 				ft_new_coord((x * CELL_SIZE) + BORDER, BORDER),
-				ft_new_coord(WIN_X - (BORDER *2), DOWN),
+				ft_new_coord(WIN_Y - (BORDER *2), DOWN),
 				0x00FFFFFF);
 		x++;
 	}
@@ -155,10 +155,12 @@ void			ft_get_map(t_info *info, int t)
 		get_next_line(0, &line);
 		if (!t)
 			I_MAP_PREV[i] = ft_strsub(line, 4, (info->map_curr)->y);
+		/*
 		else
 			ft_strdel(&(I_MAP_CURR[i]));
+			*/
 		I_MAP_CURR[i] = ft_strsub(line, 4, (info->map_curr)->y);
-		free(line);
+		//free(line);
 		i++;
 	}
 }
@@ -218,17 +220,18 @@ t_rect			*ft_new_rect(t_coord *coord1, t_coord *coord2, int color)
 	return (new);
 }
 
-t_grid			*ft_new_grid(int x, int y, int border, int cell_size)
+t_grid			*ft_new_grid(t_data *data)
 {
 	t_grid		*new;
 
 	if (!(new = ft_memalloc(sizeof(t_grid))))
 		exit(0);
-	new->rect = ft_new_rect(ft_new_coord(border, border),
-			ft_new_coord(x - border, y - border), 0x00FFFFFF);
-	new->size = cell_size;
-	new->x = (x - border) / cell_size;
-	new->y = (y - border) / cell_size;
+	new->x = (WIN_X - BORDER * 2) / SIZE;
+	new->y = (WIN_Y - BORDER * 2) / SIZE;
+	new->rect = ft_new_rect(ft_new_coord(BORDER, BORDER),
+			ft_new_coord(new->x * SIZE + BORDER,
+				new->y * SIZE + BORDER), 0x00FFFFFF);
+	new->size = SIZE;
 	return (new);
 }
 
@@ -245,59 +248,41 @@ void			ft_init_map(t_info *info)
 	coord = ft_get_map_size(line);
 	info->map_curr = ft_new_map(NULL, coord);
 	info->map_prev = ft_new_map(NULL, coord);
+	
 	ft_strdel(&line);
 	free(coord);
+	
 }
 
 t_info			*ft_init_info(void)
 {
 	t_info		*new;
-	char		*line;
 
 	if (!(new = ft_memalloc(sizeof(t_info))))
 		exit(0);
-	printf("1\n");
-	get_next_line(0, &line);
-	printf("2 > %s\n", line);
-	new->player = ((line[10] == '1') ? 'o' : 'x');
-	new->ennemy = ((line[10] == '1') ? 'x' : 'o');
-	ft_strdel(&line);
-	ft_init_map(new);
-	get_next_line(0, &line);
-	printf("3 > %s\n", line);
-	ft_strdel(&line);
-	if ((!(new->map_curr->map = ft_memalloc((new->map_curr)->y + 1)))
-			|| (!(new->map_prev->map = ft_memalloc((new->map_curr)->y + 1))))
-		exit(0);
-	ft_get_map(new, 0);
+	new->player = 0;
+	new->ennemy = 0;
+	new->map_curr = NULL;
+	new->map_prev = NULL;
 	new->piece = NULL;
 	new->aim = NULL;
 	new->t = 0;
 	return (new);
 }
 
-t_mlx_env		*ft_init_mlx_env(t_info *info,
-		int cell_size, int border)
+t_mlx_env		*ft_init_mlx_env(void *mlx, int cell_size, int border)
 {
 	t_mlx_env	*new;
 
-	printf("start\n");
 	if ((!(new = ft_memalloc(sizeof(t_mlx_env)))))
-		printf("LA ?\n");
-	printf("test\n");
-	if (!(new->mlx = mlx_init()))
-	{
-		printf("ICI ?\n");
 		exit(0);
-	}
-	printf("	1)\n");
-	new->x = (info->map_curr->x * cell_size) + border;
-	new->y = (info->map_curr->y * cell_size) + border;
-	printf("	2)\n");
-	new->win = mlx_new_window(new->mlx, new->x, new->y, "Filler");
-	new->grid = ft_new_grid(new->x, new->y, border / 2, cell_size);
+	new->mlx = mlx;
+	new->x = 0;
+	new->y = 0;
+	new->win = NULL;
+	new->grid = NULL;
 	new->border = border / 2;
-	printf("	3)\n");
+	new->size = cell_size;
 	return (new);
 }
 
@@ -310,15 +295,14 @@ t_list			*ft_init_list()
 	return (new);
 }
 
-t_data			*ft_init_data()
+t_data			*ft_init_data(void *mlx, int cell_size, int border)
 {
 	t_data		*new;
 
 	if (!(new = ft_memalloc(sizeof(t_data))))
 		exit(0);
+	new->mlx_env = ft_init_mlx_env(mlx, cell_size, border);
 	new->info = ft_init_info();
-	printf("SF\n");
-	new->mlx_env = ft_init_mlx_env(new->info, 5, 40);
 	new->list = NULL;
 	return (new);
 }
@@ -327,19 +311,72 @@ t_data			*ft_init_data()
 ** MAIN
 */
 
+void			get_map_size(t_data *data, char *line)
+{
+	int			i;
+	int			x;
+	int			y;
+
+	i = 0;
+	while (line[i] && (!(line[i] >= '0' && line[i] <= '9')))
+		i++;
+	x = ft_atoi(line + i);
+	while (line[i] >= '0' && line[i] <= '9')
+		i++;
+	y = ft_atoi(line + i);
+	WIN_X = x * SIZE + BORDER * 2;
+	WIN_Y = y * SIZE + BORDER * 2;
+	MAP_CURR = ft_new_map(NULL, ft_new_coord(x, y));
+	MAP_PREV = ft_new_map(NULL, ft_new_coord(x, y));
+}
+
 int				main(void)
 {
 	t_data		*data;
+	char		*line;
 
-	data = ft_init_data();
-	printf("T1\n");
+	printf("| START |\n");
+
+	data = ft_init_data(mlx_init(), 5, 40);
+
+	// GET PLAYER
+	printf("|	-> GETTING PLAYER...\n");
+	get_next_line(0, &line);
+	PLAYER = ((line[10] == '1') ? 'o' : 'x');
+	ENNEMY = ((line[10] == '1') ? 'x' : 'o');
+	printf("|		-> \033[34m%c\033[0m, \033[31m%c\033[0m\n", PLAYER, ENNEMY);
+	ft_strdel(&line);
+
+	// GET MAP_SIZE
+	printf("|	-> GETTING MAP_SIZE...\n");
+	get_next_line(0, &line);
+	get_map_size(data, line);
+	printf("|		-> [\033[32m%d\033[0m, \033[32m%d\033[0m]\n",
+			(MAP_CURR)->x, (MAP_CURR)->y);
+	printf("|		-> [\033[32m%d\033[0m, \033[32m%d\033[0m]\n",
+			WIN_X, WIN_Y);
+	ft_strdel(&line);
+
+	// CREATE GRID
+	printf("|	-> CREATING GRID...\n");
+	GRID = ft_new_grid(data);
+	printf("|		-> Size [%d, %d]\n",
+			GRID_X, GRID_Y);
+	printf("|		-> From [%d, %d] To [%d, %d]\n",
+			GRID_RECT->coord1->x, GRID_RECT->coord1->y,
+			GRID_RECT->coord2->x, GRID_RECT->coord2->y);
+
+	WIN = mlx_new_window(MLX, WIN_X, WIN_Y, "Fill Her");
+
+	// DISPLAY GRID
+	printf("|	-> DISPLAYING GRID...\n");
 	ft_display_grid(data);
-	printf("T2\n");
-	ft_display_map(data);
-	mlx_hook(WIN, 17, 0, &ft_exit, &data);
-	printf("T3\n");
-	mlx_loop_hook(MLX, &ft_process, &data);
-	printf("T4\n");
+
+	mlx_hook(WIN, 2, 0, &ft_exit, 0);
+	mlx_hook(WIN, 17, 0, &ft_exit, 0);
+	mlx_loop_hook(MLX, &ft_exit, 0);
 	mlx_loop(MLX);
+
+	printf("| END |\n");
 	return (0);
 }

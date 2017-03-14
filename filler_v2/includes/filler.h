@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/13 05:07:23 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/14 04:32:00 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # define WIN_Y		((data->mlx_env)->y)
 # define GRID		((data->mlx_env)->grid)
 # define BORDER		((data->mlx_env)->border)
+# define SIZE		((data->mlx_env)->size)
 
 # define GRID_RECT	(((data->mlx_env)->grid)->rect)
 # define CELL_SIZE	(((data->mlx_env)->grid)->size)
@@ -90,6 +91,7 @@ typedef struct		s_mlx_env
 	int				y;
 	t_grid			*grid;
 	int				border;
+	int				size;
 }					t_mlx_env;
 
 typedef struct		s_map
@@ -128,7 +130,7 @@ typedef struct		s_data
 t_coord				*ft_new_coord(int x, int y);
 t_rect				*ft_new_rect(t_coord *coord1, t_coord *coord2,
 		int color);
-t_grid				*ft_new_grid(int x, int y, int border, int cell_size);
+t_grid				*ft_new_grid(t_data *data);
 int					ft_get_i_map(int i, t_data *data);
 int					ft_get_i_grid(int i, t_data *data);
 

@@ -6,11 +6,12 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/20 09:00:25 by apoisson          #+#    #+#             */
-/*   Updated: 2016/12/05 10:10:46 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/14 02:25:53 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 t_buff	*new_buff(int fd, int add, t_buff **buff)
 {
@@ -35,6 +36,7 @@ int		read_line(int fd, t_buff *buff, char **line, int verif)
 {
 	int		r;
 	int		i;
+	char	*PTR;
 
 	while ((r = read(fd, buff->buff, BUFF_SIZE)) > 0)
 	{
@@ -45,14 +47,18 @@ int		read_line(int fd, t_buff *buff, char **line, int verif)
 		{
 			if ((buff->buff)[i] == '\n')
 			{
-				*line = ft_strjoinf(*line, ft_strsub(buff->buff, 0, i));
+				PTR = *line;
+				*line = ft_strjoin(*line, ft_strsub(buff->buff, 0, i));
+				ft_strdel(&PTR);
 				if ((buff->buff)[i + 1])
 					buff->mem = i + 1;
 				return (1);
 			}
 			i++;
 		}
-		*line = ft_strjoinf(*line, ft_strdup(buff->buff));
+				PTR = *line;
+		*line = ft_strjoin(*line, ft_strdup(buff->buff));
+				ft_strdel(&PTR);
 		verif = 1;
 	}
 	if (r == -1)
@@ -63,14 +69,17 @@ int		read_line(int fd, t_buff *buff, char **line, int verif)
 int		check_mem(int fd, t_buff *buff, char **line)
 {
 	int		i;
+	char	*PTR;
 
 	i = buff->mem;
 	while ((buff->buff)[i])
 	{
 		if ((buff->buff)[i] == '\n')
 		{
-			*line = ft_strjoinf(*line, ft_strsub(buff->buff, buff->mem,
+				PTR = *line;
+			*line = ft_strjoin(*line, ft_strsub(buff->buff, buff->mem,
 						i - buff->mem));
+				ft_strdel(&PTR);
 			buff->mem = -1;
 			if ((buff->buff)[i + 1])
 				buff->mem = i + 1;
@@ -78,7 +87,9 @@ int		check_mem(int fd, t_buff *buff, char **line)
 		}
 		i++;
 	}
-	*line = ft_strjoinf(*line, ft_strsub(buff->buff, buff->mem, i - buff->mem));
+				PTR = *line;
+	*line = ft_strjoin(*line, ft_strsub(buff->buff, buff->mem, i - buff->mem));
+				ft_strdel(&PTR);
 	buff->mem = -1;
 	read_line(fd, buff, line, 0);
 	return (1);
@@ -100,16 +111,11 @@ int		get_next_line(const int fd, char **line)
 {
 	static t_buff	*buff;
 	t_buff			*copy;
-	int				exists;
 
 	if (!line)
 		return (-1);
-	exists = 0;
 	if (!buff)
-	{
 		buff = new_buff(fd, 0, NULL);
-		exists = 1;
-	}
 	copy = buff;
 	if (!check_buff(fd, &copy))
 		copy = new_buff(fd, 1, &buff);
