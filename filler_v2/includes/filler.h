@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/14 04:32:00 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/16 02:23:53 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,12 +127,65 @@ typedef struct		s_data
 	t_place			*list;
 }					t_data;
 
+/*
+** FREE FUN
+*/
+
+void				ft_free_map(t_map *map);
+
+/*
+** DRAW FUN
+*/
+
+void				ft_draw_line(t_data *data, t_coord *pos_ini,
+		t_coord *charac, int color);
+void				ft_fill_rect(t_data *data, t_rect *rect);
+void				ft_draw_rect(t_data *data, t_rect *rect);
+
+/*
+** DISPLAY FUN
+*/
+
+void				ft_display_grid(t_data *data);
+void				ft_display_map(t_data *data);
+
+/*
+** GET FUN
+*/
+
+int					ft_get_i_grid(int i, t_data *data);
+int					ft_get_i_map(int i, t_data *data);
+void				ft_get_map(t_data *data);
+void				ft_get_map_size(t_data *data, char *line);
+void				ft_get_piece(t_data *data);
+void				ft_get_piece_size(t_data *data, char *line);
+
+/*
+** NEW FUN
+*/
+
+t_map				*ft_new_map(t_coord *coord);
 t_coord				*ft_new_coord(int x, int y);
 t_rect				*ft_new_rect(t_coord *coord1, t_coord *coord2,
 		int color);
 t_grid				*ft_new_grid(t_data *data);
-int					ft_get_i_map(int i, t_data *data);
-int					ft_get_i_grid(int i, t_data *data);
+
+/*
+** INIT FUN
+*/
+
+t_info				*ft_init_info(void);
+t_mlx_env			*ft_init_mlx_env(void *mlx, int cell_size, int border);
+t_list				*ft_init_list();
+t_data				*ft_init_data(void *mlx, int cell_size, int border);
+
+/*
+** MAIN FUN
+*/
+
+int					ft_process(int key, t_data *data);
+int					ft_key_handler(int key, t_data *data);
+int					ft_exit(void);
 
 /*
 t_mlx				*ft_new_mlx(int x, int y, char *title);
