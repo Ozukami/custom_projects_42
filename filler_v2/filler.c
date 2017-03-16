@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/16 02:14:59 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/16 04:08:45 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,15 @@ void			ft_free_map(t_map *map)
 	while (i < map->y)
 		free((map->map)[i++]);
 	free((map->map)[i]);
+}
+
+void			ft_free_list(t_place *place)
+{
+	if (place->next)
+		ft_free_list(place->next);
+	place->next = NULL;
+	place->prev = NULL;
+	free(place);
 }
 
 /*
@@ -216,6 +225,17 @@ void			ft_get_piece_size(t_data *data, char *line)
 ** NEW FUN
 */
 
+t_place			*ft_new_place(int x, int y)
+{
+	t_place		*new;
+
+	if (!(new = ft_memalloc(sizeof(t_place))))
+		exit(0);
+	new->x = x;
+	new->y = y;
+	return (new);
+}
+
 t_map			*ft_new_map(t_coord *coord)
 {
 	t_map		*new;
@@ -331,6 +351,67 @@ t_data			*ft_init_data(void *mlx, int cell_size, int border)
 }
 
 /*
+** PLACE FUN
+*/
+
+void			ft_add_place(t_data *data, t_place *new)
+{
+	new->next = LIST;
+	LIST = new;
+}
+
+int				ft_check_place(t_data *data, int x, int y, int verif)
+{
+	int			i;
+	int			j;
+
+	i = -1;
+	if (x + PIECE->x > MAP_CURR->x || y + PIECE->y > MAP_CURR->y)
+		return (0);
+	while ((PIECE->map)[++i])
+	{
+		j = -1;
+		while ((PIECE->map)[i][++j])
+		{
+			if ((PIECE->map)[i][j] != '.' && MAP[i + y][j + x] != '.')
+			{
+				if (MAP[i + y][j + x] != PLAYER
+						&& MAP[i + y][j + x] != PLAYER - 32)
+					return (0);
+				else if (verif++)
+					return (0);
+			}
+		}
+	}
+	if (verif)
+		return (1);
+	return (0);
+}
+
+void			ft_find_place(t_data *data)
+{
+	int			x;
+	int			y;
+
+	y = 0;
+	while (MAP[y])
+	{
+		x = 0;
+		while (MAP[y][x])
+		{
+			if (ft_check_place(data, x, y, 0))
+				ft_add_place(data, ft_new_place(x, y));
+			x++;
+		}
+		y++;
+	}
+}
+
+void			ft_get_place()
+{
+}
+
+/*
 ** MAIN PROCESS FUN
 */
 
@@ -375,6 +456,7 @@ int				ft_process(int key, t_data *data)
 	{
 		get_next_line(0, &line);
 		ft_strdel(&line);
+		//ft_free_list(LIST);
 	}
 
 	// GET MAP
@@ -383,14 +465,6 @@ int				ft_process(int key, t_data *data)
 	dprintf(2, "|		-> MAP OK\n");
 
 	// DISPLAY MAP
-	/*
-	int		i = 0;
-	while (MAP[i])
-	{
-		dprintf(2, "%s	%d\n", MAP[i], i);
-		i++;
-	}
-	*/
 	dprintf(2, "|	-> DISPLAYING MAP...\n");
 	ft_display_map(data);
 	dprintf(2, "|		-> DISPLAY OK\n");
@@ -413,15 +487,12 @@ int				ft_process(int key, t_data *data)
 	get_next_line(0, &line);
 	ft_get_piece_size(data, line);
 	ft_get_piece(data);
-	/*
-	int		i = 0;
-	while ((PIECE->map)[i])
-		dprintf(2, "|		-> %s\n", (PIECE->map)[i++]);
-		*/
 
 	// PROCESS
-	//dprintf(2, "|	-> PROCESSING...\n");
+	dprintf(2, "|	-> PROCESSING...\n");
 	
+	ft_find_place(data);
+	dprintf(2, "%d %d\n", LIST->x, LIST->y);
 	return (1);
 }
 
