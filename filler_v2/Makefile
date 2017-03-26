@@ -6,13 +6,14 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/03/26 09:30:58 by apoisson         ###   ########.fr        #
+#    Updated: 2017/03/27 00:47:45 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = apoisson.filler
 FLAGS = -Wall -Wextra -Werror
-SRC = filler.c
+#SRC = filler.c
+SRC = draw.c ft_info.c main.c struct.c
 
 all: $(NAME)
 
