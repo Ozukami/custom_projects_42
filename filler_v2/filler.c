@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/16 04:08:45 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/26 07:44:47 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,10 @@ void			ft_display_map(t_data *data)
 	int			color;
 
 	y = -1;
-	while (++y < ((MAP_CURR)->y))
+	while (++y < ((MAP_CURR)->x))
 	{
 		x = -1;
-		while (++x < (MAP_CURR)->x)
+		while (++x < (MAP_CURR)->y)
 		{
 			if (MAP[y][x] == 'O' || MAP[y][x] == 'o')
 				color = 0x00FF0000;
@@ -116,23 +116,27 @@ void			ft_display_grid(t_data *data)
 	int			y;
 
 	y = 0;
-	while (y < (((WIN_Y - 2 * BORDER)) / CELL_SIZE) + 1)
+	while (y < (((WIN_X - 2 * BORDER)) / CELL_SIZE) + 1)
 	{
+		dprintf(2, "%d ", y);
 		ft_draw_line(data,
 				ft_new_coord(BORDER, (y * CELL_SIZE) + BORDER),
-				ft_new_coord(WIN_X - (BORDER *2), RIGHT),
+				ft_new_coord(WIN_Y - (2 * BORDER), RIGHT),
 				0x00FFFFFF);
 		y++;
 	}
+		dprintf(2, "\n");
 	x = 0;
-	while (x < (((WIN_X - 2 * BORDER)) / CELL_SIZE) + 1)
+	while (x < (((WIN_Y - 2 * BORDER)) / CELL_SIZE) + 1)
 	{
+		dprintf(2, "%d ", x);
 		ft_draw_line(data,
 				ft_new_coord((x * CELL_SIZE) + BORDER, BORDER),
-				ft_new_coord(WIN_Y - (BORDER *2), DOWN),
+				ft_new_coord(WIN_X - (2 * BORDER), DOWN),
 				0x00FFFFFF);
 		x++;
 	}
+		dprintf(2, "\n");
 }
 
 /*
@@ -156,14 +160,15 @@ void			ft_get_map(t_data *data)
 
 	i = 0;
 	line = NULL;
-	while (i < (MAP_CURR)->y)
+	while (i < (MAP_CURR)->x)
 	{
 		get_next_line(0, &line);
+		dprintf(2, "\033[34m			|%s|\n", line);
 		if (!(TURN))
-			(MAP_PREV->map)[i] = ft_strsub(line, 4, MAP_CURR->x);
+			(MAP_PREV->map)[i] = ft_strsub(line, 4, MAP_CURR->y);
 		else
 			ft_strdel(&(MAP[i]));
-		MAP[i] = ft_strsub(line, 4, MAP_CURR->x);
+		MAP[i] = ft_strsub(line, 4, MAP_CURR->y);
 		free(line);
 		i++;
 	}
@@ -176,6 +181,7 @@ void			ft_get_map_size(t_data *data, char *line)
 	int			x;
 	int			y;
 
+	dprintf(2, "\033[34mget_map_size | Line = %s\n", line);
 	i = 0;
 	while (line[i] && (!(line[i] >= '0' && line[i] <= '9')))
 		i++;
@@ -373,10 +379,10 @@ int				ft_check_place(t_data *data, int x, int y, int verif)
 		j = -1;
 		while ((PIECE->map)[i][++j])
 		{
-			if ((PIECE->map)[i][j] != '.' && MAP[i + y][j + x] != '.')
+			if ((PIECE->map)[i][j] != '.' && MAP[i + x][j + y] != '.')
 			{
-				if (MAP[i + y][j + x] != PLAYER
-						&& MAP[i + y][j + x] != PLAYER - 32)
+				if (MAP[i + x][j + y] != PLAYER
+						&& MAP[i + x][j + y] != PLAYER - 32)
 					return (0);
 				else if (verif++)
 					return (0);
@@ -393,22 +399,85 @@ void			ft_find_place(t_data *data)
 	int			x;
 	int			y;
 
-	y = 0;
-	while (MAP[y])
+	dprintf(2, "\033[31mfind place\n\033[0m");
+	x = 0;
+	while (MAP[x])
 	{
-		x = 0;
-		while (MAP[y][x])
+		y = 0;
+		while (MAP[x][y])
 		{
 			if (ft_check_place(data, x, y, 0))
-				ft_add_place(data, ft_new_place(x, y));
-			x++;
+			{
+				dprintf(1, "%d %d\n", x, y);
+				return ;
+				//ft_add_place(data, ft_new_place(x, y));
+			}
+			y++;
 		}
-		y++;
+		x++;
+	}
+	dprintf(1, "%d %d\n", 0, 0);
+}
+
+void			ft_update_map(t_data *data, t_coord *coord)
+{
+	int			x;
+	int			y;
+
+	x = 0;
+	while (MAP_PIECE[x])
+	{
+		y = 0;
+		while (MAP_PIECE[x][y])
+		{
+			if (MAP_PIECE[x][y] == '*')
+				ft_fill_rect(data, ft_new_rect(ft_new_coord(
+								ft_get_i_grid(coord->x + x, data) + 1,
+								ft_get_i_grid(coord->y + y, data) + 1),
+							ft_new_coord(CELL_SIZE - 2, CELL_SIZE - 1),
+							0x00ECE142));
+			y++;
+		}
+		x++;
 	}
 }
 
-void			ft_get_place()
+void			ft_send_coord(t_data *data, t_coord *coord)
 {
+	if (coord->x > -1 && coord->y > -1)
+		dprintf(1, "%d %d\n", coord->x, coord->y);
+	else if (LIST)
+	{
+		dprintf(1, "%d %d\n", LIST->x, LIST->y);
+		ft_update_map(data, coord);
+	}
+	else
+		dprintf(1, "0 0\n");
+}
+
+void			ft_get_place(t_data *data)
+{
+	t_place		*current;
+	t_coord		*coord;
+
+	current = LIST;
+	coord = ft_new_coord(-1, -1);
+	while (current)
+	{
+		if (AIM->x > -1 || AIM->y > -1)
+		{
+			if (ft_absolute(AIM->x - current->x)
+					+ ft_absolute(AIM->y - current->y)
+					< ft_absolute(AIM->x - coord->x)
+					+ ft_absolute(AIM->y - coord->y))
+			{
+				coord->x = current->x;
+				coord->y = current->y;
+			}
+		}
+		current = current->next;
+	}
+	ft_send_coord(data, coord);
 }
 
 /*
@@ -444,11 +513,12 @@ void			ft_wild_ennemy_appears(t_data *data)
 	}
 }
 
-int				ft_process(int key, t_data *data)
+int				ft_process(t_data *data)
 {
 	char		*line;
+	int			i;
 
-	dprintf(2, "| > KEY = %d\n", key);
+	dprintf(2, "\033[34m	< %p >\n\033[0m", data);
 	// SKIPING COLUMNS LINE
 	get_next_line(0, &line);
 	ft_strdel(&line);
@@ -458,23 +528,28 @@ int				ft_process(int key, t_data *data)
 		ft_strdel(&line);
 		//ft_free_list(LIST);
 	}
+	dprintf(2, "\033[34m%d\n\033[0m", MAP_CURR->x);
+	dprintf(2, "\033[34m%d\n\033[0m", MAP_CURR->y);
 
 	// GET MAP
-	dprintf(2, "|	-> GETTING MAP...\n");
+	dprintf(2, "\033[34m|	-> GETTING MAP...\n\033[0m");
 	ft_get_map(data);
-	dprintf(2, "|		-> MAP OK\n");
+	dprintf(2, "\033[34m|		-> MAP OK\n\033[0m");
 
 	// DISPLAY MAP
-	dprintf(2, "|	-> DISPLAYING MAP...\n");
+	dprintf(2, "\033[34m|	-> DISPLAYING MAP...\n\033[0m");
+	i = 0;
+	while (MAP[i])
+		dprintf(2, "		|%s|\n", MAP[i++]);
 	ft_display_map(data);
-	dprintf(2, "|		-> DISPLAY OK\n");
+	dprintf(2, "\033[34m|		-> DISPLAY OK\n\033[0m");
 	
 	// DIFF MAP - MAP_PREV
-	dprintf(2, "|	-> SPOTTING ENNEMIES...\n");
+	dprintf(2, "\033[34m|	-> SPOTTING ENNEMIES...\n\033[0m");
 	ft_wild_ennemy_appears(data);
 	if (AIM->x > -1 && AIM->y > -1)
 	{
-		dprintf(2, "|	< LAST ENNEMY SAW ON [%d,%d] >\n", AIM->x, AIM->y);
+		dprintf(2, "\033[34m|		< LAST ENNEMY SAW ON [%d,%d] >\n\033[0m", AIM->x, AIM->y);
 		ft_fill_rect(data, ft_new_rect(ft_new_coord(
 						ft_get_i_grid(AIM->x, data) + 1,
 						ft_get_i_grid(AIM->y, data) + 1),
@@ -483,25 +558,45 @@ int				ft_process(int key, t_data *data)
 	}
 
 	// GET PIECE
-	dprintf(2, "|	-> GETTING PIECE...\n");
+	dprintf(2, "\033[34m|	-> GETTING PIECE...\n\033[0m");
 	get_next_line(0, &line);
+	dprintf(2, "\033[34m%s\n\033[0m", line);
 	ft_get_piece_size(data, line);
 	ft_get_piece(data);
 
+	dprintf(2, "\033[34m|	-> DISPLAYING PIECE...\n\033[0m");
+	i = 0;
+	while (MAP_PIECE[i])
+		dprintf(2, "\033[34m|		%s\n\033[0m", MAP_PIECE[i++]);
+
 	// PROCESS
-	dprintf(2, "|	-> PROCESSING...\n");
+	dprintf(2, "\033[34m|	-> PROCESSING...\n\033[0m");
 	
+	// FIND VALID PLACES
+	dprintf(2, "\033[34m|		-> FINDING VALID PLACES...\n\033[0m");
 	ft_find_place(data);
-	dprintf(2, "%d %d\n", LIST->x, LIST->y);
+	sleep(1);
+
+	/*
+	// GET BEST PLACE
+	dprintf(2, "\033[34m|		-> GETTING BEST PLACE...\n\033[0m");
+	ft_get_place(data);
+
+	// DISPLAY SOLUTION
+	dprintf(2, "\033[34m%d %d\n\033[0m", LIST->x, LIST->y);
+	*/
 	return (1);
 }
 
 int				ft_key_handler(int key, t_data *data)
 {
+	(void)data;
 	if (key == 53)
 		ft_exit();
+	/*
 	else
 		ft_process(key, data);
+		*/
 	return (0);
 }
 
@@ -509,6 +604,12 @@ int				ft_exit(void)
 {
 	exit(0);
 	return (0);
+}
+
+int				ft_test(t_data *data)
+{
+	dprintf(2, "\033[34m%p\n\033[0m", data);
+	return (1);
 }
 
 /*
@@ -520,51 +621,51 @@ int				main(void)
 	t_data		*data;
 	char		*line;
 
-	dprintf(2, "| START |\n");
+	dprintf(2, "\033[34m| START |\n\033[0m");
 
 	data = ft_init_data(mlx_init(), 5, 40);
 
 	// GET PLAYER
-	dprintf(2, "|	-> GETTING PLAYER...\n");
+	dprintf(2, "\033[34m|	-> GETTING PLAYER...\n\033[0m");
 	get_next_line(0, &line);
 	PLAYER = ((line[10] == '1') ? 'o' : 'x');
 	ENNEMY = ((line[10] == '1') ? 'x' : 'o');
-	dprintf(2, "|		-> \033[34m%c\033[0m, \033[31m%c\033[0m\n", PLAYER, ENNEMY);
+	dprintf(2, "\033[34m|		-> \033[34m%c\033[0m, \033[31m%c\033[0m\n", PLAYER, ENNEMY);
 	ft_strdel(&line);
 
 	// GET MAP_SIZE
-	dprintf(2, "|	-> GETTING MAP_SIZE...\n");
+	dprintf(2, "\033[34m|	-> GETTING MAP_SIZE...\n\033[0m");
 	get_next_line(0, &line);
 	ft_get_map_size(data, line);
-	dprintf(2, "|		-> [\033[32m%d\033[0m, \033[32m%d\033[0m]\n",
+	dprintf(2, "\033[34m|		-> [\033[34m%d\033[0m, \033[34m%d\033[0m]\n\033[0m",
 			(MAP_CURR)->x, (MAP_CURR)->y);
-	dprintf(2, "|		-> [\033[32m%d\033[0m, \033[32m%d\033[0m]\n",
+	dprintf(2, "\033[34m|		-> [\033[34m%d\033[0m, \033[34m%d\033[0m]\n\033[0m",
 			WIN_X, WIN_Y);
 	ft_strdel(&line);
 
 	// CREATE GRID
-	dprintf(2, "|	-> CREATING GRID...\n");
+	dprintf(2, "\033[34m|	-> CREATING GRID...\n\033[0m");
 	GRID = ft_new_grid(data);
-	dprintf(2, "|		-> Size [%d, %d]\n",
+	dprintf(2, "\033[34m|		-> Size [%d, %d]\n\033[0m",
 			GRID_X, GRID_Y);
-	dprintf(2, "|		-> From [%d, %d] To [%d, %d]\n",
+	dprintf(2, "\033[34m|		-> From [%d, %d] To [%d, %d]\n\033[0m",
 			GRID_RECT->coord1->x, GRID_RECT->coord1->y,
 			GRID_RECT->coord2->x, GRID_RECT->coord2->y);
 
 	WIN = mlx_new_window(MLX, WIN_X, WIN_Y, "Fill Her");
 
 	// DISPLAY GRID
-	dprintf(2, "|	-> DISPLAYING GRID...\n");
+	dprintf(2, "\033[34m|	-> DISPLAYING GRID...\n\033[0m");
 	ft_display_grid(data);
-	dprintf(2, "|		-> DISPLAY OK\n");
+	dprintf(2, "\033[34m|		-> DISPLAY OK\n\033[0m");
 
 	mlx_hook(WIN, 2, 0, &ft_key_handler, data);
 	mlx_hook(WIN, 17, 0, &ft_exit, 0);
 
-	//mlx_loop_hook(MLX, &ft_process, data);
+	mlx_loop_hook(MLX, &ft_process, data);
 	//mlx_loop_hook(MLX, &ft_exit, 0);
 	mlx_loop(MLX);
 
-	dprintf(2, "| END |\n");
+	dprintf(2, "\033[34m| END |\n\033[0m");
 	return (0);
 }

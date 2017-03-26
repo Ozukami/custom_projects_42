@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/16 02:23:53 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/26 04:02:59 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@
 # define MAP		(((data->info)->map_curr)->map)
 # define MAP_PREV	((data->info)->map_prev)
 # define PIECE		((data->info)->piece)
+# define MAP_PIECE	(((data->info)->piece)->map)
 # define AIM		((data->info)->aim)
 # define TURN		((data->info)->t)
 
@@ -183,7 +184,7 @@ t_data				*ft_init_data(void *mlx, int cell_size, int border);
 ** MAIN FUN
 */
 
-int					ft_process(int key, t_data *data);
+int					ft_process(t_data *data);
 int					ft_key_handler(int key, t_data *data);
 int					ft_exit(void);
 
