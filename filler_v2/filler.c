@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 21:41:35 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/26 07:44:47 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/26 08:59:24 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,6 +381,7 @@ int				ft_check_place(t_data *data, int x, int y, int verif)
 		{
 			if ((PIECE->map)[i][j] != '.' && MAP[i + x][j + y] != '.')
 			{
+	dprintf(2, "\033[31m[%d,%d]\033[0m", i + x, j + y);
 				if (MAP[i + x][j + y] != PLAYER
 						&& MAP[i + x][j + y] != PLAYER - 32)
 					return (0);
@@ -398,24 +399,40 @@ void			ft_find_place(t_data *data)
 {
 	int			x;
 	int			y;
+	int			i;
 
+	i = 0;
+	while (i < MAP_CURR->x)
+	{
+		dprintf(2, "%d > %s\n", i, MAP[i]);
+		i++;
+	}
+	i = 0;
+	while ((PIECE->map)[i])
+		dprintf(2, "%s\n", (PIECE->map)[i++]);
 	dprintf(2, "\033[31mfind place\n\033[0m");
+
 	x = 0;
-	while (MAP[x])
+	while (x < MAP_CURR->x)
 	{
 		y = 0;
-		while (MAP[x][y])
+		while (y < MAP_CURR->y)
 		{
 			if (ft_check_place(data, x, y, 0))
 			{
-				dprintf(1, "%d %d\n", x, y);
-				return ;
-				//ft_add_place(data, ft_new_place(x, y));
+				ft_add_place(data, ft_new_place(x, y));
 			}
 			y++;
 		}
 		x++;
 	}
+	dprintf(2, "\n\033[31mend find place\n\033[0m");
+	if (LIST)
+	{
+		dprintf(1, "%d %d\n", LIST->x, LIST->y);
+		return ;
+	}
+	dprintf(2, "Liste vide\n");
 	dprintf(1, "%d %d\n", 0, 0);
 }
 
@@ -518,7 +535,6 @@ int				ft_process(t_data *data)
 	char		*line;
 	int			i;
 
-	dprintf(2, "\033[34m	< %p >\n\033[0m", data);
 	// SKIPING COLUMNS LINE
 	get_next_line(0, &line);
 	ft_strdel(&line);
@@ -538,15 +554,20 @@ int				ft_process(t_data *data)
 
 	// DISPLAY MAP
 	dprintf(2, "\033[34m|	-> DISPLAYING MAP...\n\033[0m");
+	/*
 	i = 0;
 	while (MAP[i])
-		dprintf(2, "		|%s|\n", MAP[i++]);
+	{
+		dprintf(2, "		%d|%s|\n", i, MAP[i]);
+		i++;
+	}
+	*/
 	ft_display_map(data);
 	dprintf(2, "\033[34m|		-> DISPLAY OK\n\033[0m");
 	
 	// DIFF MAP - MAP_PREV
 	dprintf(2, "\033[34m|	-> SPOTTING ENNEMIES...\n\033[0m");
-	ft_wild_ennemy_appears(data);
+	//ft_wild_ennemy_appears(data);
 	if (AIM->x > -1 && AIM->y > -1)
 	{
 		dprintf(2, "\033[34m|		< LAST ENNEMY SAW ON [%d,%d] >\n\033[0m", AIM->x, AIM->y);
@@ -575,7 +596,6 @@ int				ft_process(t_data *data)
 	// FIND VALID PLACES
 	dprintf(2, "\033[34m|		-> FINDING VALID PLACES...\n\033[0m");
 	ft_find_place(data);
-	sleep(1);
 
 	/*
 	// GET BEST PLACE
@@ -652,7 +672,7 @@ int				main(void)
 			GRID_RECT->coord1->x, GRID_RECT->coord1->y,
 			GRID_RECT->coord2->x, GRID_RECT->coord2->y);
 
-	WIN = mlx_new_window(MLX, WIN_X, WIN_Y, "Fill Her");
+	WIN = mlx_new_window(MLX, WIN_Y, WIN_X, "Fill Her");
 
 	// DISPLAY GRID
 	dprintf(2, "\033[34m|	-> DISPLAYING GRID...\n\033[0m");
