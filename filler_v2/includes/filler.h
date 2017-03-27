@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 02:04:57 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 04:32:41 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@
 # include <fcntl.h>
 # include <stdio.h> //
 
+# define INFO		(data->info)
+# define MLX		(data->mlx)
+
 # define D_MLX_X	(data->mlx->x_size)
 # define D_MLX_Y	(data->mlx->y_size)
 # define D_MLX		(data->mlx->mlx)
-# define MLX		(mlx->mlx)
 # define D_WIN		(data->mlx->win)
 # define WIN		(mlx->win)
 
@@ -41,6 +43,8 @@
 # define R_2		(rect->coord2)
 # define R_X2		(rect->coord2->x)
 # define R_Y2		(rect->coord2->y)
+
+# define I_GRID(a, b, c)	ft_get_i_grid(a, b, c)
 
 typedef struct	s_info
 {
@@ -87,7 +91,6 @@ typedef struct	s_mlx
 	int			x_size;
 	int			y_size;
 	int			bg_color;
-	int			**map;
 	t_rect		*grid;
 }				t_mlx;
 
@@ -97,7 +100,7 @@ typedef struct	s_data
 	t_mlx		*mlx;
 }				t_data;
 
-t_info			*ft_new_info(char p);
+t_info			*ft_new_info(void);
 t_place			*ft_new_place(int x, int y);
 void			ft_add_place(t_place **list, t_place *new);
 
@@ -124,6 +127,8 @@ int			ft_key_event_handler(int key, t_mlx **mlx);
 t_coord			*ft_get_place(t_data *data, t_info *info);
 t_coord			*ft_new_coord(int x, int y);
 void			ft_free_coord(t_coord **coord);
+void			free_map(char **map);
+void			free_data(t_data *data);
 
 t_data		*ft_new_data(t_info *info, t_mlx *mlx);
 

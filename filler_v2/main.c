@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 02:21:35 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 04:33:18 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,18 @@ int			ft_absolute(int a)
 	if (a < 0)
 		return (-a);
 	return (a);
+}
+
+void		ft_skip_n_line(int n)
+{
+	char	*line;
+
+	while (n != 0)
+	{
+		get_next_line(0, &line);
+		ft_strdel(&line);
+		n--;
+	}
 }
 
 t_place		*ft_new_place(int x, int y)
@@ -60,6 +72,8 @@ void		ft_get_piece_size(t_info **info, char *line)
 		}
 		i++;
 	}
+	if (!(*info)->t)
+		free_map((*info)->piece);
 	(*info)->piece = ft_memalloc((sizeof(char *)) * ((*info)->x_piece + 1));
 	((*info)->piece)[(*info)->x_piece] = 0;
 }
@@ -186,10 +200,12 @@ t_coord		*ft_get_place(t_data *data, t_info *info)
 	return (coord);
 }
 
-void		ft_map_size(t_info **info, char *line)
+void		ft_map_size(t_info **info)
 {
+	char	*line;
 	int		i;
 
+	get_next_line(0, &line);
 	i = 0;
 	while (line[i])
 	{
@@ -203,6 +219,7 @@ void		ft_map_size(t_info **info, char *line)
 		}
 		i++;
 	}
+	ft_strdel(&line);
 }
 
 void		ft_wild_ennemy_appears(t_info **info, t_data *data)
@@ -252,6 +269,7 @@ void		ft_get_map(t_info **info, int t)
 		((*info)->map)[i] = ft_strdup(ft_strsub(line, 4, (*info)->y_map));
 		i++;
 	}
+
 }
 
 void		ft_display_map(t_data *data)
@@ -259,34 +277,28 @@ void		ft_display_map(t_data *data)
 	int		x;
 	int		y;
 
-	y = 0;
-	while (y < ((data)->info)->x_map)
+	y = -1;
+	while (++y < ((data)->info)->x_map)
 	{
-		x = 0;
-		while (x < ((data)->info)->y_map)
+		x = -1;
+		while (++x < ((data)->info)->y_map)
 		{
 			if ((((data)->info)->map)[y][x] == 'O'
 					|| (((data)->info)->map)[y][x] == 'o')
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-							ft_get_i_grid(x, 20, 5) + 1,
-							ft_get_i_grid(y, 20, 5) + 1),
+								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
 						ft_new_coord(3, 4), 0x00FF0000));
 			else if ((((data)->info)->map)[y][x] == 'x'
 					|| (((data)->info)->map)[y][x] == 'X')
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-							ft_get_i_grid(x, 20, 5) + 1,
-							ft_get_i_grid(y, 20, 5) + 1),
+								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
 						ft_new_coord(3, 4), 0x000000FF));
 			else
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-							ft_get_i_grid(x, 20, 5) + 1,
-							ft_get_i_grid(y, 20, 5) + 1),
+								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
 						ft_new_coord(3, 4), 0x0000FF00));
-			x++;
 		}
-		y++;
 	}
-	mlx_do_sync(((data)->mlx)->mlx);
 }
 
 int			ft_update_map(t_data *data)
@@ -296,13 +308,13 @@ int			ft_update_map(t_data *data)
 	line = NULL;
 	if ((((data)->info)->t)++)
 	{
-		get_next_line(0, &line);
-		get_next_line(0, &line);
+		ft_skip_n_line(2);
 		ft_get_map(&((data)->info), ((data)->info)->t);
 		ft_wild_ennemy_appears(&((data)->info), data);
 	}
 	get_next_line(0, &line);
 	ft_get_piece_size(&((data)->info), line);
+	ft_strdel(&line);
 	ft_get_piece(&((data)->info));
 	return (1);
 }
@@ -335,41 +347,40 @@ int			ft_process(t_data *data)
 	return (1);
 }
 
-int			ft_exit(void)
+int			ft_exit(t_data *data)
 {
+	free_data(data);
 	exit(0);
 	return (1);
 }
 
-int			ft_key_handler(int key)
+int			ft_key_handler(int key, t_data *data)
 {
 	if (key == 53)
-		ft_exit();
+		ft_exit(data);
 	return (0);
 }
 
 int			main(void)
 {
 	t_info	*info;
-	char	*line;
 	t_mlx	*mlx;
 	t_data	*data;
 
-	get_next_line(0, &line);
-	info = ft_new_info(((line[10] == '1') ? 'o' : 'x'));
-	get_next_line(0, &line);
-	ft_map_size(&info, line);
+	info = ft_new_info();
+	ft_map_size(&info);
 	info->map = ft_memalloc((sizeof(char *)) * (info->x_map + 1));
 	info->map_prev = ft_memalloc((sizeof(char *)) * (info->x_map + 1));
 	(info->map)[info->x_map] = 0;
 	(info->map_prev)[info->x_map] = 0;
-	get_next_line(0, &line);
+	ft_skip_n_line(1);
 	ft_get_map(&info, 0);
 	mlx = ft_new_mlx((info->y_map * 5) + 40, (info->x_map * 5) + 40, "Filler");
 	data = ft_new_data(info, mlx);
 	ft_display_grid(data);
 	ft_display_map(data);
-	mlx_hook(mlx->win, 2, 0, &ft_key_handler, 0);
+	mlx_do_sync(((data)->mlx)->mlx);
+	mlx_hook(mlx->win, 2, 0, &ft_key_handler, data);
 	mlx_hook(mlx->win, 17, 0, &ft_exit, data);
 	mlx_loop_hook(mlx->mlx, &ft_process, data);
 	mlx_loop(mlx->mlx);
