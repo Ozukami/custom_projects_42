@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 05:57:56 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 23:49:21 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,22 @@
 # include <fcntl.h>
 # include <stdio.h> //
 
-# define INFO		(data->info)
-# define MLX		(data->mlx)
+# define BORDER		20
+# define CELL_SIZE	5
 
+# define INFO		(data->info)
+# define D_MAP		(data->info->map)
+# define MAP		(info->map)
+# define MAP_X		(info->x_map)
+# define MAP_Y		(info->y_map)
+# define D_MAP_PREV	(data->info->map_prev)
+# define MAP_PREV	(info->map_prev)
+# define D_PIECE	(data->info->piece)
+# define PIECE		(info->piece)
+# define PIECE_X	(info->x_piece)
+# define PIECE_Y	(info->y_piece)
+
+# define MLX		(data->mlx)
 # define D_MLX_X	(data->mlx->x_size)
 # define D_MLX_Y	(data->mlx->y_size)
 # define D_MLX		(data->mlx->mlx)
@@ -43,6 +56,9 @@
 # define R_2		(rect->coord2)
 # define R_X2		(rect->coord2->x)
 # define R_Y2		(rect->coord2->y)
+
+# define C_X		(coord->x)
+# define C_Y		(coord->y)
 
 # define I_GRID(a, b, c)	ft_get_i_grid(a, b, c)
 
