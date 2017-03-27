@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 00:56:22 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 02:04:57 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,30 @@
 # include "mlx.h"
 # include <fcntl.h>
 # include <stdio.h> //
+
+# define D_MLX_X	(data->mlx->x_size)
+# define D_MLX_Y	(data->mlx->y_size)
+# define D_MLX		(data->mlx->mlx)
+# define MLX		(mlx->mlx)
+# define D_WIN		(data->mlx->win)
+# define WIN		(mlx->win)
+
+# define DIRECTION	(charac->y)
+
+# define RIGHT		1
+# define LEFT		3
+# define DOWN		0
+# define UP			2
+
+# define R_COLOR	(rect->color)
+
+# define R_1		(rect->coord1)
+# define R_X1		(rect->coord1->x)
+# define R_Y1		(rect->coord1->y)
+
+# define R_2		(rect->coord2)
+# define R_X2		(rect->coord2->x)
+# define R_Y2		(rect->coord2->y)
 
 typedef struct	s_info
 {
@@ -43,12 +67,6 @@ typedef struct	s_place
 	int				y;	
 }				t_place;
 
-t_info			*ft_new_info(char p);
-t_place			*ft_new_place(int x, int y);
-void			ft_add_place(t_place **list, t_place *new);
-
-int				ft_check_place(t_info *info, int x, int y, int verif);
-
 typedef struct	s_coord
 {
 	int			x;
@@ -62,8 +80,6 @@ typedef struct	s_rect
 	int			color;
 }				t_rect;
 
-t_rect		*ft_new_rect(t_coord *coord1, t_coord *coord2, int color);
-
 typedef struct	s_mlx
 {
 	void		*mlx;
@@ -75,6 +91,20 @@ typedef struct	s_mlx
 	t_rect		*grid;
 }				t_mlx;
 
+typedef struct	s_data
+{
+	t_info		*info;
+	t_mlx		*mlx;
+}				t_data;
+
+t_info			*ft_new_info(char p);
+t_place			*ft_new_place(int x, int y);
+void			ft_add_place(t_place **list, t_place *new);
+
+int				ft_check_place(t_info *info, int x, int y, int verif);
+
+t_rect		*ft_new_rect(t_coord *coord1, t_coord *coord2, int color);
+
 t_mlx		*ft_new_mlx(int x, int y, char *title);
 
 int			ft_get_i_map(int i, int i_border, int size);
@@ -82,26 +112,14 @@ int			ft_get_i_grid(int i, int i_border, int size);
 
 void		ft_display_player(t_mlx *mlx);
 void		ft_hide_player(t_mlx *mlx);
-void		ft_display_grid(t_mlx *mlx);
+void		ft_display_grid(t_data *data);
 
-void		ft_draw_line(t_mlx *mlx, int x, int y, int value,
-		int dir, int color);
-void		ft_fill_rectangle(t_mlx *mlx, int x, int y,
-		int col, int line, int color);
-void		ft_fill_square(t_mlx *mlx, int x, int y,
-		int size, int color);
-void		ft_draw_rectangle(t_mlx *mlx, int x, int y,
-		int col, int line, int color);
-void		ft_draw_square(t_mlx *mlx, int x, int y,
-		int size, int color);
+void		ft_draw_line(t_data *data, t_coord *pos_ini,
+		t_coord *charac, int color);
+void		ft_fill_rectangle(t_data *data, t_rect *rect);
+void		ft_draw_rectangle(t_data *data, t_rect *rect);
 
 int			ft_key_event_handler(int key, t_mlx **mlx);
-
-typedef struct	s_data
-{
-	t_info		*info;
-	t_mlx		*mlx;
-}				t_data;
 
 t_coord			*ft_get_place(t_data *data, t_info *info);
 t_coord			*ft_new_coord(int x, int y);
