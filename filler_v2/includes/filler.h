@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:32:41 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 05:57:56 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct	s_info
 typedef struct	s_place
 {
 	struct s_place	*next;
-	struct s_place	*prev;
 	int				x;
 	int				y;	
 }				t_place;
