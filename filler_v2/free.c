@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 02:35:11 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:30:56 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 04:34:50 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@ void	free_info(t_info *info)
 
 void	free_mlx(t_mlx *mlx)
 {
-	//mlx_destroy_window(mlx->mlx, mlx->win);
-	//free_rect(mlx->grid);
-	//free(mlx->mlx);
+	mlx_destroy_window(mlx->mlx, mlx->win);
+	free_rect(mlx->grid);
+	free(mlx->mlx);
 	free(mlx);
 }
 
 void	free_data(t_data *data)
 {
 	free_info(INFO);
-	//free_mlx(MLX);
+	free_mlx(MLX);
 	free(data);
 }

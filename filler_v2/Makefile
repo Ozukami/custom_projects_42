@@ -6,7 +6,7 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/03/27 04:26:32 by apoisson         ###   ########.fr        #
+#    Updated: 2017/03/27 05:55:44 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ new: libft.a filler.c
 test: $(NAME)
 	@printf "\033[0;31m- Executing filler -\n\033[0m"
 	@cp $(NAME) players/
-	@./filler_vm -f maps/map00 -p1 players/$(NAME)
+	@./filler_vm -f maps/map02 -p1 players/$(NAME) -p2 players/$(NAME)
 	@printf "\033[0;31m-- End of filler --\n\033[0m"
 
 test_map: $(NAME)

@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/06 23:52:54 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:33:18 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 05:54:56 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void		ft_get_piece_size(t_info **info, char *line)
 		}
 		i++;
 	}
-	if (!(*info)->t)
+	if ((*info)->t > 1)
 		free_map((*info)->piece);
 	(*info)->piece = ft_memalloc((sizeof(char *)) * ((*info)->x_piece + 1));
 	((*info)->piece)[(*info)->x_piece] = 0;
@@ -89,6 +89,7 @@ void		ft_get_piece(t_info **info)
 	{
 		get_next_line(0, &line);
 		((*info)->piece)[i] = ft_strdup(line);
+		ft_strdel(&line);
 		i++;
 	}
 }
@@ -163,12 +164,20 @@ void		ft_display_new_piece(t_data *data)
 	}
 }
 
-void		ft_send_coord(t_data *data, t_coord *coord)
+void		free_list(t_place *list)
+{
+	if (list->next)
+		free_list(list->next);
+	free(list);
+}
+
+void		ft_send_coord(t_data *data, t_coord *coord, t_place **list)
 {
 	if (coord->x > -1 && coord->y > -1)
 	{
 		dprintf(1, "%d %d\n", coord->x, coord->y);
 		ft_display_new_piece(data);
+		free_list(*list);
 	}
 	else
 		dprintf(1, "%d %d\n", 0, 0);
@@ -196,7 +205,7 @@ t_coord		*ft_get_place(t_data *data, t_info *info)
 	}
 	if (list && coord->x == -1 && coord->y == -1)
 		ft_set_coord(coord, list->x, list->y);
-	ft_send_coord(data, coord);
+	ft_send_coord(data, coord, &list);
 	return (coord);
 }
 
@@ -267,6 +276,7 @@ void		ft_get_map(t_info **info, int t)
 		else
 			free(((*info)->map)[i]);
 		((*info)->map)[i] = ft_strdup(ft_strsub(line, 4, (*info)->y_map));
+		ft_strdel(&line);
 		i++;
 	}
 
@@ -343,6 +353,7 @@ int			ft_process(t_data *data)
 			}
 		}
 	}
+	free(coord);
 	mlx_do_sync(((data)->mlx)->mlx);
 	return (1);
 }

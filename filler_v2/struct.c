@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:06:44 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 04:34:41 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,34 +36,6 @@ t_rect	*ft_new_rect(t_coord *coord1, t_coord *coord2, int color)
 	new->color = color;
 	return (new);
 }
-
-/*
-int		**ft_init_map(t_coord *coord1)
-{
-	int		**map;
-	int		i;
-	int		j;
-	t_coord	*coord2;
-
-	coord2 = ft_new_coord(ft_get_i_map(coord1->x, 20, 5),
-			ft_get_i_map(coord1->y, 20, 5));
-	map = malloc(sizeof(int *) * ((coord2->y)));
-	i = 0;
-	while (i < (coord2->y))
-	{
-		j = 0;
-		map[i] = malloc(sizeof(int) * ((coord2->x)));
-		while (j < (coord2->x))
-			map[i][j++] = 1;
-		map[i][j] = 0;
-		i++;
-	}
-	map[i] = malloc(sizeof(int));
-	map[i][0] = 0;
-	ft_free_coord(&coord2);
-	return (map);
-}
-*/
 
 t_mlx	*ft_new_mlx(int x, int y, char *title)
 {
