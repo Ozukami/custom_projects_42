@@ -6,7 +6,7 @@
 /*   By: qumaujea <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/01/20 09:22:05 by qumaujea          #+#    #+#             */
-/*   Updated: 2017/02/02 11:58:46 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/26 00:33:25 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char			*ft_ulltoa_base(unsigned long long value, int base, int maj)
 	int			size;
 
 	size = get_size(value, (unsigned long long)base);
-	if (!(itoa = malloc(sizeof(char) * (size + 1))))
+	if (!(itoa = ft_memalloc(sizeof(char) * (size + 1))))
 		return (NULL);
 	itoa[size--] = '\0';
 	while (size >= 0)

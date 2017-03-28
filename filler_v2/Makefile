@@ -6,7 +6,7 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/03/28 05:45:41 by apoisson         ###   ########.fr        #
+#    Updated: 2017/03/28 22:56:10 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,20 +18,20 @@ MLX = mlx.c draw.c display.c
 
 all: $(NAME)
 
-$(NAME): libft.a $(SRC)
+$(NAME): libft.a $(addprefix srcs/, $(SRC))
 	@printf "\033[0;36m> Compiling filler\033[0m"
-	@gcc $(FLAGS) -I includes/ -L. -lft $(SRC) $(MAIN) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
+	@gcc $(FLAGS) -I includes/ -L. -lft $(addprefix srcs/, $(SRC)) $(addprefix srcs/, $(MAIN)) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
+	@printf "\033[0;32m OK\n\033[0m"
+
+mlx: libft.a $(addprefix srcs/, $(SRC))
+	@printf "\033[0;36m> Compiling filler\033[0m"
+	@gcc $(FLAGS) -I includes/ -L. -lft $(addprefix srcs/, $(SRC)) $(addprefix srcs/, $(MLX)) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
 	@printf "\033[0;32m OK\n\033[0m"
 
 libft.a:
 	@make -C libft/
 	@mv libft/libft.a .
 	@make clean -C libft/
-
-new: libft.a filler.c
-	@printf "\033[0;36m> Compiling filler (Test Build)\033[0m"
-	@gcc $(FLAGS) -I includes/ -L. -lft filler.c -o test -lmlx -framework OpenGL -framework AppKit
-	@printf "\033[0;32m OK\n\033[0m"
 
 test: $(NAME)
 	@printf "\033[0;31m- Executing filler -\n\033[0m"

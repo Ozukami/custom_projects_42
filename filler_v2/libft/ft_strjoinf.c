@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/05 08:35:46 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/14 00:48:49 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/04 06:08:59 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ char	*ft_strjoinf(char *s1, char *s2)
 	int			j;
 
 	if (!(stack = ft_memalloc(ft_strlen(s1) + ft_strlen(s2) + 1)))
-	{
-		ft_putstr("[ERROR MALLOC] > ft_strjoinf\n");
 		return (NULL);
-	}
 	i = -1;
 	j = -1;
 	while (s1[++i])
