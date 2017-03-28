@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 05:44:01 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 05:49:17 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 # include "libft.h"
 # include "mlx.h"
-# include <fcntl.h>
-# include <stdio.h> //
 
 # define BORDER			20
 # define CELL_SIZE		5
@@ -85,7 +83,7 @@ typedef struct			s_place
 {
 	struct s_place		*next;
 	int					x;
-	int					y;	
+	int					y;
 }						t_place;
 
 typedef struct			s_coord
@@ -118,74 +116,38 @@ typedef struct			s_data
 	int					speed;
 }						t_data;
 
-/*
-t_info					*ft_new_info(void);
-t_place					*ft_new_place(int x, int y);
-void					ft_add_place(t_place **list, t_place *new);
-
-int						ft_check_place(t_info *info, int x, int y, int verif);
-
-t_rect					*ft_new_rect(t_coord *coord1,
-		t_coord *coord2, int color);
-
-t_mlx					*ft_new_mlx(int x, int y, char *title);
-
-int						ft_get_i_map(int i, int i_border, int size);
-int						ft_get_i_grid(int i, int i_border, int size);
-
-void					ft_display_player(t_mlx *mlx);
-void					ft_hide_player(t_mlx *mlx);
-void					ft_display_grid(t_data *data);
-
-void					ft_draw_line(t_data *data, t_coord *pos_ini,
-		t_coord *charac, int color);
+void					ft_display_new_piece(t_data *data);
+void					ft_display_map(t_data *data);
+int						ft_exit(t_data *data);
+int						ft_key_handler(int key, t_data *data);
 void					ft_fill_rectangle(t_data *data, t_rect *rect);
 void					ft_draw_rectangle(t_data *data, t_rect *rect);
-
-int						ft_key_event_handler(int key, t_mlx **mlx);
-
-t_coord					*ft_get_place(t_data *data, t_info *info);
-t_coord					*ft_new_coord(int x, int y);
-
-void					ft_free_coord(t_coord **coord);
+void					ft_display_grid(t_data *data);
 void					free_map(char **map);
+void					free_info(t_info *info);
+void					free_mlx(t_mlx *mlx);
 void					free_data(t_data *data);
-void					free_rect(t_rect *rect);
-
+void					free_list(t_place **list);
+t_info					*ft_new_info(void);
+void					ft_get_piece_size(t_info *info, char *line);
+void					ft_get_piece(t_info *info);
+void					ft_get_map_size(t_info *info);
+void					ft_get_map(t_info *info, int t);
+int						ft_update_map(t_data *data);
+int						ft_check_place(t_info *info, int x, int y, int verif);
+void					ft_find_place(t_info *info, t_place **list);
+t_coord					*ft_get_place(t_info *info);
+t_coord					*ft_new_coord(int x, int y);
+t_rect					*ft_new_rect(t_coord *coord1,
+		t_coord *coord2, int color);
+t_mlx					*ft_new_mlx(int x, int y, char *title);
 t_data					*ft_new_data(t_info *info, t_mlx *mlx);
-*/
-
-void					ft_display_new_piece(t_data *data);
-void		ft_display_map(t_data *data);
-int			ft_exit(t_data *data);
-int			ft_key_handler(int key, t_data *data);
-void	ft_fill_rectangle(t_data *data, t_rect *rect);
-void	ft_draw_rectangle(t_data *data, t_rect *rect);
-void	ft_display_grid(t_data *data);
-void	free_map(char **map);
-void	free_info(t_info *info);
-void	free_mlx(t_mlx *mlx);
-void	free_data(t_data *data);
-void	free_list(t_place **list);
-t_info	*ft_new_info(void);
-void		ft_get_piece_size(t_info *info, char *line);
-void		ft_get_piece(t_info *info);
-void		ft_get_map_size(t_info *info);
-void		ft_get_map(t_info *info, int t);
-int			ft_update_map(t_data *data);
-int			ft_check_place(t_info *info, int x, int y, int verif);
-void		ft_find_place(t_info *info, t_place **list);
-t_coord		*ft_get_place(t_info *info);
-t_coord	*ft_new_coord(int x, int y);
-t_rect	*ft_new_rect(t_coord *coord1, t_coord *coord2, int color);
-t_mlx	*ft_new_mlx(int x, int y, char *title);
-t_data	*ft_new_data(t_info *info, t_mlx *mlx);
-t_place	*ft_new_place(int x, int y);
-int		ft_get_i_map(int i, int i_border, int size);
-int		ft_get_i_grid(int i, int i_border, int size);
-void	ft_skip_n_line(int n);
-void	ft_set_coord(t_coord *coord, int x, int y);
-void	ft_add_place(t_place **list, t_place *new);
-void	ft_wild_ennemy_appears(t_data *data);
+t_place					*ft_new_place(int x, int y);
+int						ft_get_i_map(int i, int i_border, int size);
+int						ft_get_i_grid(int i, int i_border, int size);
+void					ft_skip_n_line(int n);
+void					ft_set_coord(t_coord *coord, int x, int y);
+void					ft_add_place(t_place **list, t_place *new);
+void					ft_wild_ennemy_appears(t_data *data);
 
 #endif
