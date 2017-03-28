@@ -6,18 +6,29 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:40:25 by apoisson          #+#    #+#             */
-/*   Updated: 2017/02/10 05:45:48 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/27 02:42:37 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-t_info	*ft_new_info(char p)
+char	get_player(void)
+{
+	char	*line;
+	char	c;
+
+	get_next_line(0, &line);
+	c = ((line[10] == '1') ? 'o' : 'x');
+	ft_strdel(&line);
+	return (c);
+}
+
+t_info	*ft_new_info(void)
 {
 	t_info	*info;
 
 	info = ft_memalloc(sizeof(t_info));
-	info->player = p;
+	info->player = get_player();
 	info->map = NULL;
 	info->x_map = 0;
 	info->y_map = 0;

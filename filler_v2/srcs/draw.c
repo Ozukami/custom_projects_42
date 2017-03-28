@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:40:17 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/12 05:11:50 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 05:16:56 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,19 @@
 ** Draw Line (with direction)
 */
 
-void	ft_draw_line(t_mlx *mlx, int x, int y,
-		int value, int dir, int color)
+void	ft_draw_line(t_data *data, t_coord *pos_ini,
+		t_coord *charac, int color)
 {
 	int	i;
 
 	i = 0;
-	while (i < value)
+	while (i < charac->x + 1)
 	{
-		x += ((dir == 1) ? 1 : 0);
-		x += ((dir == 3) ? -1 : 0);
-		y += ((dir == 0) ? 1 : 0);
-		y += ((dir == 2) ? -1 : 0);
-		mlx_pixel_put(mlx->mlx, mlx->win, x, y, color);
+		mlx_pixel_put(D_MLX, D_WIN, pos_ini->x, pos_ini->y, color);
+		pos_ini->x += ((DIRECTION == RIGHT) ? 1 : 0);
+		pos_ini->x += ((DIRECTION == LEFT) ? -1 : 0);
+		pos_ini->y += ((DIRECTION == DOWN) ? 1 : 0);
+		pos_ini->y += ((DIRECTION == UP) ? -1 : 0);
 		i++;
 	}
 }
@@ -41,71 +41,57 @@ void	ft_draw_line(t_mlx *mlx, int x, int y,
 ** Fill Rectangle
 */
 
-void	ft_fill_rectangle(t_mlx *mlx, int x, int y, int col, int line, int color)
+void	ft_fill_rectangle(t_data *data, t_rect *rect)
 {
 	int		i;
 
-	i = 0;
-	while (i < line)
-	{
-		ft_draw_line(mlx->mlx, x, y + i, col, 1, color);
-		i++;
-	}
-}
-
-/*
-** Fill Square
-*/
-
-void	ft_fill_square(t_mlx *mlx, int x, int y, int size, int color)
-{
-	ft_fill_rectangle(mlx->mlx, x, y, size, size, color);
+	i = -1;
+	while (++i < rect->coord2->y)
+		ft_draw_line(data, ft_new_coord(R_X1, R_Y1 + i),
+				ft_new_coord(R_X2, 1), R_COLOR);
+	free(R_1);
+	free(R_2);
 }
 
 /*
 ** Draw Rectangle
 */
 
-void	ft_draw_rectangle(t_mlx *mlx, int x, int y, int col, int line, int color)
+void	ft_draw_rectangle(t_data *data, t_rect *rect)
 {
-	ft_draw_line(mlx->mlx, x, y, col, 1, color);
-	ft_draw_line(mlx->mlx, x, y, line, 0, color);
-	ft_draw_line(mlx->mlx, x, y + line, col, 1, color);
-	ft_draw_line(mlx->mlx, x + col, y, line, 0, color);
-}
-
-/*
-** Draw Square
-*/
-
-void	ft_draw_square(t_mlx *mlx, int x, int y, int size, int color)
-{
-	ft_draw_rectangle(mlx, x, y, size, size, color);
+	ft_draw_line(data, R_1, ft_new_coord(R_X2, RIGHT), R_COLOR);
+	ft_draw_line(data, R_1, ft_new_coord(R_Y2, DOWN), R_COLOR);
+	ft_draw_line(data, ft_new_coord(R_X1, R_Y1 + R_Y2),
+			ft_new_coord(R_X2, RIGHT), R_COLOR);
+	ft_draw_line(data, ft_new_coord(R_X1 + R_X2, R_Y2),
+			ft_new_coord(R_Y2, DOWN), R_COLOR);
 }
 
 /*
 ** DISPLAY FUNCTIONS
 */
 
-void	ft_display_grid(t_mlx *mlx)
+void	ft_display_grid(t_data *data)
 {
-	int			x;
-	int			y;
-	int			x_border;
-	int			y_border;
+	int	x;
+	int	y;
 
 	y = 0;
-	x_border = 20;
-	y_border = 20;
-	while (y < (((mlx->y_size - (y_border + x_border)) / 5)))
+	while (y < (((D_MLX_Y - 2 * 20)) / 5) + 1)
 	{
-		x = 0;
-		while (x < (((mlx->x_size - 2 * x_border)) / 5))
-		{
-			ft_draw_square(mlx, (x * 5) + x_border,
-					(y * 5) + y_border, 5, 0x00FFFFFF);
-			x++;
-		}
+		ft_draw_line(data,
+				ft_new_coord(20, (y * 5) + 20),
+				ft_new_coord(D_MLX_X - (2 * 20), RIGHT),
+				0x00FFFFFF);
 		y++;
+	}
+	x = 0;
+	while (x < (((D_MLX_X - 2 * 20)) / 5) + 1)
+	{
+		ft_draw_line(data,
+				ft_new_coord((x * 5) + 20, 20),
+				ft_new_coord(D_MLX_Y - (2 * 20), DOWN),
+				0x00FFFFFF);
+		x++;
 	}
 }
