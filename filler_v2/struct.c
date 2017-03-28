@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 04:35:50 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 05:10:47 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,15 @@ t_data	*ft_new_data(t_info *info, t_mlx *mlx)
 	new->info = info;
 	new->mlx = mlx;
 	new->speed = 0;
+	return (new);
+}
+
+t_place	*ft_new_place(int x, int y)
+{
+	t_place	*new;
+
+	new = ft_memalloc(sizeof(t_place));
+	new->x = x;
+	new->y = y;
 	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 02:35:11 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:34:50 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 05:20:33 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,6 @@ void	free_map(char **map)
 		ft_strdel(&(map[i]));
 		i++;
 	}
-}
-
-void	free_rect(t_rect *rect)
-{
-	free(R_1);
-	free(R_2);
 }
 
 void	free_info(t_info *info)
@@ -55,4 +49,12 @@ void	free_data(t_data *data)
 	free_info(INFO);
 	free_mlx(MLX);
 	free(data);
+}
+
+void	free_list(t_place **list)
+{
+	if ((*list)->next)
+		free_list(&((*list)->next));
+	free(*list);
+	*list = NULL;
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/27 02:37:37 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 03:42:08 by apoisson         ###   ########.fr       */
+/*   Created: 2017/03/28 05:05:17 by apoisson          #+#    #+#             */
+/*   Updated: 2017/03/28 05:05:20 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ void		ft_display_new_piece(t_data *data)
 		y = 0;
 		while ((data->info->piece)[x][y])
 		{
-			if ((data->info->map_prev)[x][y] == '*')
+			if ((INFO->map_prev)[x][y] == '*')
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-							ft_get_i_grid(y, 20, 5) + 1,
-							ft_get_i_grid(x, 20, 5) + 1),
-						ft_new_coord(3, 4), 0x00ECE142));
+							ft_get_i_grid(y, BORDER, CELL_SIZE) + 1,
+							ft_get_i_grid(x, BORDER, CELL_SIZE) + 1),
+						ft_new_coord(CELL_SIZE - 2, CELL_SIZE - 1),
+						0x00ECE142));
 			y++;
 		}
 		x++;
@@ -40,43 +41,39 @@ void		ft_display_map(t_data *data)
 	int		y;
 
 	y = -1;
-	while (++y < ((data)->info)->x_map)
+	while (++y < INFO->x_map)
 	{
 		x = -1;
-		while (++x < ((data)->info)->y_map)
+		while (++x < INFO->y_map)
 		{
-			if ((((data)->info)->map)[y][x] == 'O'
-					|| (((data)->info)->map)[y][x] == 'o')
+			if ((INFO->map)[y][x] != '.')
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
-						ft_new_coord(3, 4), 0x00FF0000));
-			else if ((((data)->info)->map)[y][x] == 'x'
-					|| (((data)->info)->map)[y][x] == 'X')
-				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
-						ft_new_coord(3, 4), 0x000000FF));
+								I_GRID(x, BORDER, CELL_SIZE) + 1,
+								I_GRID(y, BORDER, CELL_SIZE) + 1),
+						ft_new_coord(CELL_SIZE - 2, CELL_SIZE - 1),
+						0x000000FF));
 			else
 				ft_fill_rectangle(data, ft_new_rect(ft_new_coord(
-								I_GRID(x, 20, 5) + 1, I_GRID(y, 20, 5) + 1),
-						ft_new_coord(3, 4), 0x0000FF00));
+								I_GRID(x, BORDER, CELL_SIZE) + 1,
+								I_GRID(y, BORDER, CELL_SIZE) + 1),
+						ft_new_coord(CELL_SIZE - 2, CELL_SIZE - 1),
+						0x0000FF00));
 		}
 	}
 }
 
-int			ft_update_map(t_data *data)
+int			ft_exit(t_data *data)
 {
-	char	*line;
-
-	line = NULL;
-	if ((((data)->info)->t)++)
-	{
-		ft_skip_n_line(2);
-		ft_get_map(&((data)->info), ((data)->info)->t);
-		ft_wild_ennemy_appears(&((data)->info), data);
-	}
-	get_next_line(0, &line);
-	ft_get_piece_size(&((data)->info), line);
-	ft_strdel(&line);
-	ft_get_piece(&((data)->info));
+	free_data(data);
+	exit(0);
 	return (1);
+}
+
+int			ft_key_handler(int key, t_data *data)
+{
+	if (key == 53)
+		ft_exit(data);
+	if (key == 49)
+		SPEED = (SPEED) ? 0 : 1;
+	return (0);
 }
