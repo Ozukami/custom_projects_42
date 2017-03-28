@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/28 05:11:40 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 05:24:47 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 23:35:27 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void		ft_get_map_size(t_info *info)
 	int		i;
 
 	get_next_line(0, &line);
-	dprintf(2, "%s\n", line);
 	i = 0;
 	while (line[i])
 	{

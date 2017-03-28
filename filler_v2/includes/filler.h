@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 23:17:18 by qumaujea         ###   ########.fr       */
+/*   Updated: 2017/03/28 23:34:54 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "libft.h"
 # include "mlx.h"
-# include <stdio.h>
 
 # define BORDER			20
 # define CELL_SIZE		5
