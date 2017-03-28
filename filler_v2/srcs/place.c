@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/28 05:22:03 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 05:40:56 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 23:13:49 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,12 @@ t_coord		*ft_get_place(t_info *info)
 		free_list(&list);
 	}
 	return (coord);
+}
+
+void		ft_display_coord(int x, int y)
+{
+	ft_putnbr_fd(x, 1);
+	ft_putchar(' ');
+	ft_putnbr_fd(y, 1);
+	ft_putchar('\n');
 }

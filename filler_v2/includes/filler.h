@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 22:55:17 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 23:17:18 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ int						ft_update_map(t_data *data);
 int						ft_check_place(t_info *info, int x, int y, int verif);
 void					ft_find_place(t_info *info, t_place **list);
 t_coord					*ft_get_place(t_info *info);
+void					ft_display_coord(int x, int y);
 t_coord					*ft_new_coord(int x, int y);
 t_rect					*ft_new_rect(t_coord *coord1,
 		t_coord *coord2, int color);

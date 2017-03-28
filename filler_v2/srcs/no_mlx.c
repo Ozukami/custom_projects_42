@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 23:51:49 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 05:46:27 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 23:16:09 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ int			ft_process(t_data *data)
 	ft_update_map(data);
 	coord = ft_get_place(data->info);
 	if (coord->x > -1 && coord->y > -1)
-		dprintf(1, "%d %d\n", coord->x, coord->y);
+		ft_display_coord(coord->x, coord->y);
 	else
-		dprintf(1, "%d %d\n", 0, 0);
+		ft_display_coord(0, 0);
 	free(coord);
 	return (1);
 }

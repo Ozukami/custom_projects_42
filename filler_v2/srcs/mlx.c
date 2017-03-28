@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   mlx.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: qumaujea <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/03/27 23:11:26 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 05:45:06 by apoisson         ###   ########.fr       */
+/*   Created: 2017/03/28 23:15:06 by qumaujea          #+#    #+#             */
+/*   Updated: 2017/03/28 23:16:26 by qumaujea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@ void		ft_send_coord(t_data *data, t_coord *coord)
 {
 	if (coord->x > -1 && coord->y > -1)
 	{
-		dprintf(1, "%d %d\n", coord->x, coord->y);
+		ft_display_coord(coord->x, coord->y);
 		ft_display_new_piece(data);
 		if (!SPEED)
 			sleep(1);
 	}
 	else
-		dprintf(1, "%d %d\n", 0, 0);
+		ft_display_coord(0, 0);
 }
 
 void		ft_wild_ennemy_appears(t_data *data)
