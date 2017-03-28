@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 23:49:21 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 01:08:56 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void		ft_draw_rectangle(t_data *data, t_rect *rect);
 
 int			ft_key_event_handler(int key, t_mlx **mlx);
 
-t_coord			*ft_get_place(t_data *data, t_info *info);
+//t_coord			*ft_get_place(t_data *data, t_info *info);
 t_coord			*ft_new_coord(int x, int y);
 void			ft_free_coord(t_coord **coord);
 void			free_map(char **map);

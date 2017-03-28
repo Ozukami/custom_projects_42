@@ -6,13 +6,11 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 23:11:26 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 23:49:09 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 02:09:41 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
-#include <fcntl.h>
-#include <stdio.h>
 
 int			ft_absolute(int a)
 {
@@ -199,8 +197,8 @@ t_coord		*ft_get_place(t_data *data, t_info *info)
 		if (info->x_side > -1 || info->y_side > -1)
 			if (ft_absolute(info->x_side - current->x) +
 					ft_absolute(info->y_side - current->y) <
-					ft_absolute(info->x_side - coord->x) +
-					ft_absolute(info->y_side - coord->y))
+					ft_absolute(info->x_side - C_X) +
+					ft_absolute(info->y_side - C_Y))
 				ft_set_coord(coord, current->x, current->y);
 		current = current->next;
 	}
@@ -272,10 +270,10 @@ void		ft_get_map(t_info *info, int t)
 	{
 		get_next_line(0, &line);
 		if (!t)
-			MAP_PREV[i] = ft_strdup(ft_strsub(line, 4, MAP_Y));
+			MAP_PREV[i] = ft_strsub(line, 4, MAP_Y);
 		else
-			free(MAP[i]);
-		MAP[i] = ft_strdup(ft_strsub(line, 4, MAP_Y));
+			ft_strdel(&(MAP[i]));
+		MAP[i] = ft_strsub(line, 4, MAP_Y);
 		ft_strdel(&line);
 		i++;
 	}
