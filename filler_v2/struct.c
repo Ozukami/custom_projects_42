@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:37:47 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 04:34:41 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 04:35:50 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ t_data	*ft_new_data(t_info *info, t_mlx *mlx)
 	new = malloc(sizeof(t_data));
 	new->info = info;
 	new->mlx = mlx;
+	new->speed = 0;
 	return (new);
 }

@@ -6,20 +6,21 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/03/28 02:11:44 by apoisson         ###   ########.fr        #
+#    Updated: 2017/03/28 04:19:43 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = apoisson.filler
 FLAGS = -Wall -Wextra -Werror
-#SRC = filler.c
-SRC = free.c get_i.c draw.c ft_info.c no_mlx.c struct.c
+SRC = free.c get_i.c draw.c ft_info.c struct.c
+MAIN = no_mlx.c
+MLX = main.c
 
 all: $(NAME)
 
 $(NAME): libft.a $(SRC)
 	@printf "\033[0;36m> Compiling filler\033[0m"
-	@gcc $(FLAGS) -I includes/ -L. -lft $(SRC) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
+	@gcc $(FLAGS) -I includes/ -L. -lft $(SRC) $(MLX) -o $(NAME) -lmlx -framework OpenGL -framework AppKit
 	@printf "\033[0;32m OK\n\033[0m"
 
 libft.a:

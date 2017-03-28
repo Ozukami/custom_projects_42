@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 23:11:26 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 02:09:41 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 04:35:08 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void		ft_get_piece_size(t_info *info, char *line)
 	}
 	if (info->t > 1)
 		free_map(PIECE);
+	free(PIECE);
 	PIECE = ft_memalloc((sizeof(char *)) * (PIECE_X + 1));
 	PIECE[PIECE_X] = 0;
 }
@@ -168,6 +169,7 @@ void		free_list(t_place *list)
 	if (list->next)
 		free_list(list->next);
 	free(list);
+	list = NULL;
 }
 
 void		ft_send_coord(t_data *data, t_coord *coord, t_place **list)
@@ -177,6 +179,8 @@ void		ft_send_coord(t_data *data, t_coord *coord, t_place **list)
 		dprintf(1, "%d %d\n", coord->x, coord->y);
 		ft_display_new_piece(data);
 		free_list(*list);
+		if (!SPEED)
+			sleep(1);
 	}
 	else
 		dprintf(1, "%d %d\n", 0, 0);
@@ -363,6 +367,8 @@ int			ft_key_handler(int key, t_data *data)
 {
 	if (key == 53)
 		ft_exit(data);
+	if (key == 49)
+		SPEED = (SPEED) ? 0 : 1;
 	return (0);
 }
 

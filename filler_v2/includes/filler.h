@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/07 02:27:04 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/28 01:08:56 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 04:35:35 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@
 
 # define I_GRID(a, b, c)	ft_get_i_grid(a, b, c)
 
+# define SPEED		(data->speed)
+
 typedef struct	s_info
 {
 	char		player;
@@ -113,6 +115,7 @@ typedef struct	s_data
 {
 	t_info		*info;
 	t_mlx		*mlx;
+	int			speed;
 }				t_data;
 
 t_info			*ft_new_info(void);
@@ -144,6 +147,7 @@ t_coord			*ft_new_coord(int x, int y);
 void			ft_free_coord(t_coord **coord);
 void			free_map(char **map);
 void			free_data(t_data *data);
+void			free_rect(t_rect *rect);
 
 t_data		*ft_new_data(t_info *info, t_mlx *mlx);
 

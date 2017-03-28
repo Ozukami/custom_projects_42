@@ -6,7 +6,7 @@
 /*   By: apoisson <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/08 10:40:17 by apoisson          #+#    #+#             */
-/*   Updated: 2017/03/27 02:31:51 by apoisson         ###   ########.fr       */
+/*   Updated: 2017/03/28 04:23:04 by apoisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	ft_fill_rectangle(t_data *data, t_rect *rect)
 	while (++i < rect->coord2->y)
 		ft_draw_line(data, ft_new_coord(R_X1, R_Y1 + i),
 				ft_new_coord(R_X2, 1), R_COLOR);
+	free_rect(rect);
 }
 
 /*
