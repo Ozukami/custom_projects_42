@@ -45,13 +45,16 @@ int		main(int ac, char **av)
 
 	printf("Waiting for the server...\n");
 
-	/*---- Read the message from the server into the buffer ----*/
 	while ((r = recv(client_socket, buffer, 1024, 0)))
 	{
 		buffer[r] = '\0';
 		printf("%s",buffer);
 
-		scanf("%s", buffer);
+		do
+		{
+			printf("1 : Rock\n2 : Paper\n3 : Scissors\n");
+			scanf("%s", buffer);
+		} while (atoi(buffer) != 1 && atoi(buffer) != 2 && atoi(buffer) != 3);
 		send(client_socket, buffer, strlen(buffer), 0);
 	}
 
