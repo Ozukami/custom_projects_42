@@ -18,6 +18,8 @@ void	check_winners(char *buffer, int id)
 		}
 		exit(0);
 	}
+	else
+		system("afplay ressources/wihlelm.aiff");
 }
 
 int		main(int ac, char **av)
