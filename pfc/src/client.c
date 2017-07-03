@@ -18,7 +18,7 @@ void	check_winners(char *buffer, int id)
 		}
 		exit(0);
 	}
-	else
+	else if (strstr(buffer, "Null"))
 		system("afplay ressources/wihlelm.aiff");
 }
 
