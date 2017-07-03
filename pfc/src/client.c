@@ -2,24 +2,19 @@
 
 #include "pfc.h"
 
-void	check_winners(char *buffer, char *name)
+void	check_winners(char *buffer, int id)
 {
-	size_t	i;
-
-	i = strlen(buffer) - 5;
 	if (strstr(buffer, "WINS"))
 	{
-		while (buffer[--i] != '\n')
-			;
-		if (strstr(buffer + i, name))
+		if (atoi(buffer + strlen(buffer) - 15) == id)
 		{
 			printf("\033[32mWON !\n\033[0m");
-			system("afplay win_sound.aiff");
+			system("afplay ressources/win_sound.aiff");
 		}
 		else
 		{
 			printf("\033[31mLOOSE !\n\033[0m");
-			system("afplay loose_sound.aiff");
+			system("afplay ressources/loose_sound.aiff");
 		}
 		exit(0);
 	}
@@ -27,6 +22,7 @@ void	check_winners(char *buffer, char *name)
 
 int		main(int ac, char **av)
 {
+	int			player_id;
 	int			client_socket;
 	char		buffer[1024];
 	t_sock		serverAddr;
@@ -60,7 +56,12 @@ int		main(int ac, char **av)
 	if (connect(client_socket, (struct sockaddr *) &serverAddr, addr_size))
 		perror("");
 
-	printf("Connection OK\n");
+	if ((r = recv(client_socket, buffer, 1024, 0)) < 1)
+		perror("");
+	buffer[r] = '\0';
+	player_id = atoi(buffer);
+
+	printf("Connection OK (player ID = %d)\n", player_id);
 
 	sprintf(buffer, "%s", av[1]);
 	printf("Sending data to the server...\n");
@@ -73,7 +74,7 @@ int		main(int ac, char **av)
 		buffer[r] = '\0';
 		printf("%s",buffer);
 
-		check_winners(buffer, av[1]);
+		check_winners(buffer, player_id);
 
 		do
 		{

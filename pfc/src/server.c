@@ -75,6 +75,8 @@ int 	main(int ac, char **av)
 
 		printf("Connection accepted (P1)\n");
 
+		sprintf(buffer, "1");
+		send(p1_socket, buffer, strlen(buffer), 0);
 		if ((r = recv(p1_socket, buffer, 1024, 0)) == -1)
 			perror("");
 		buffer[r] = '\0';
@@ -93,6 +95,8 @@ int 	main(int ac, char **av)
 
 		printf("Connection accepted (P2)\n");
 
+		sprintf(buffer, "2");
+		send(p2_socket, buffer, strlen(buffer), 0);
 		if ((r = recv(p2_socket, buffer, 1024, 0)) == -1)
 			perror("");
 		buffer[r] = '\0';
