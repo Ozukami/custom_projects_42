@@ -2,6 +2,29 @@
 
 #include "pfc.h"
 
+void	check_winners(char *buffer, char *name)
+{
+	size_t	i;
+
+	i = strlen(buffer) - 5;
+	if (strstr(buffer, "WINS"))
+	{
+		while (buffer[--i] != '\n')
+			;
+		if (strstr(buffer + i, name))
+		{
+			printf("\033[32mWON !\n\033[0m");
+			system("afplay win_sound.aiff");
+		}
+		else
+		{
+			printf("\033[31mLOOSE !\n\033[0m");
+			system("afplay loose_sound.aiff");
+		}
+		exit(0);
+	}
+}
+
 int		main(int ac, char **av)
 {
 	int			client_socket;
@@ -27,7 +50,7 @@ int		main(int ac, char **av)
 	/* Set all bits of the padding field to 0 */
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(7891);
-	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddr.sin_addr.s_addr = inet_addr("10.13.10.3");
 	//memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
 	printf("Connecting to the server...\n");
@@ -49,6 +72,8 @@ int		main(int ac, char **av)
 	{
 		buffer[r] = '\0';
 		printf("%s",buffer);
+
+		check_winners(buffer, av[1]);
 
 		do
 		{
