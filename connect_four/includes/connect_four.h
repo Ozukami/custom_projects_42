@@ -11,7 +11,7 @@
 # include <string.h>
 # include <unistd.h>
 
-# define IP_ADDR      "10.0.2.15"
+# define IP_ADDR      "10.13.12.19"
 # define BUFF_SIZE    1024
 # define PSEUDO_SIZE  128
 
