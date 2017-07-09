@@ -173,6 +173,17 @@ int		check_diago_r(t_game *game, int j, int p)
 	return (0);
 }
 
+int		tray_is_full(t_game *game)
+{
+	int		j;
+
+	j = -1;
+	while (++j < 7)
+		if (TRAY[0][j] == 0)
+			return (0);
+	return (-1);
+}
+
 int		check_winner(t_game *game, int j, int p)
 {
 	int		rep;
@@ -184,6 +195,8 @@ int		check_winner(t_game *game, int j, int p)
 	if ((rep = check_diago_r(game, j, p)))
 		return (rep);
 	if ((rep = check_diago_l(game, j, p)))
+		return (rep);
+	if ((rep = tray_is_full(game)))
 		return (rep);
 	return (0);
 }
@@ -209,10 +222,11 @@ int		send_choice(t_game *game, int client_socket, int p)
 
 void	display_winner(t_game *game, int winner, int p)
 {
-	if (!winner)
+	if (winner == -1)
 	{
 		printf("%sNO WINNER%s\n", RED, DEFAULT);
-		system("afplay ressources/aiff/wihlelm_sound.aiff");
+		system("afplay ressources/aiff/wihlelm.aiff");
+		return ;
 	}
 	printf(PURPLE);
 	if (winner == 1)
@@ -278,8 +292,6 @@ void	host_game(t_game *game)
 	ssize_t		r;
 	int			op_val = 1;
 
-	printf("HOSTING A GAME\n");
-
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(7891);
 	serverAddr.sin_addr.s_addr = inet_addr(IP_ADDR);
@@ -296,7 +308,7 @@ void	host_game(t_game *game)
 	printf("P1 : %s\n", buffer);
 	if (listen(server_socket, 1) < 0)
 		exit_perror("listen");
-	printf("Waiting for a player...\n");
+	printf("[SYSTEM] Waiting for a player...\n");
 	if ((client_socket = accept(server_socket, (struct sockaddr *) &serverStorage, &addr_size)) < 0)
 		exit_perror("accept");
 	if (send(client_socket, buffer, strlen(buffer), 0) < 0)
@@ -304,10 +316,8 @@ void	host_game(t_game *game)
 	if ((r = recv(client_socket, buffer, 1024, 0)) < 1)
 		exit_perror("recv");
 	buffer[r] = '\0';
-	printf("Player %s has joined !\n", buffer);
+	printf("[SYSTEM] Player %s has joined !\n", buffer);
 	P2 = new_player(buffer, 2, 0, client_socket);
-	printf("P1 = %s (%d)%s\n", P1_PSEUDO, P1_ID, ((P1->is_host) ? " [HOST]" : ""));
-	printf("P2 = %s (%d)%s\n", P2_PSEUDO, P2_ID, ((P2->is_host) ? " [HOST]" : ""));
 	start_new_game(game, client_socket);
 	close(server_socket);
 	close(client_socket);
@@ -321,29 +331,25 @@ void connect_to_host(t_game *game)
 	socklen_t	addr_size;
 	ssize_t		r;
 
-	printf("CONNECTING TO A GAME\n");
-
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(7891);
 	serverAddr.sin_addr.s_addr = inet_addr(IP_ADDR);
 	if ((client_socket = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 		exit_perror("socket");
 	addr_size = sizeof serverAddr;
-	printf("Connecting to the game...\n");
+	printf("[SYSTEM] Connecting to the game...\n");
 	if (connect(client_socket, (struct sockaddr *) &serverAddr, addr_size))
 		exit_perror("connect");
 	if ((r = recv(client_socket, buffer, 1024, 0)) < 1)
 		exit_perror("recv");
-	printf("Connected to : %s\n", buffer);
+	printf("[SYSTEM] Connected to : %s\n", buffer);
 	P1 = new_player(buffer, 1, 1, client_socket);
 	printf("Enter a Pseudo\n");
 	scanf("%s", buffer);
 	P2 = new_player(buffer, 2, 0, client_socket);
 	if (send(client_socket, buffer, strlen(buffer), 0) < 0)
 		exit_perror("send");
-	printf("Waiting for the server...\n");
-	printf("P1 = %s (%d)%s\n", P1_PSEUDO, P1_ID, ((P1->is_host) ? " [HOST]" : ""));
-	printf("P2 = %s (%d)%s\n", P2_PSEUDO, P2_ID, ((P2->is_host) ? " [HOST]" : ""));
+	printf("[SYSTEM] Waiting for the server...\n");
 	play_v_host(game, client_socket);
 	close(client_socket);
 }
@@ -376,7 +382,16 @@ t_game	*new_game()
 	return (game);
 }
 
-void menu(void)
+void	free_game(t_game *game)
+{
+	ft_strdel(&P1_PSEUDO);
+	free(P1);
+	ft_strdel(&P2_PSEUDO);
+	free(P2);
+	// free tray
+}
+
+void	menu(void)
 {
 	char	choice[128];
 	t_game	*game;
@@ -401,7 +416,7 @@ void menu(void)
 		versus_ia(game);
 	if (atoi(choice) == 4)
 		exit(0);
-	//free_game(game);
+	free_game(game);
 }
 
 int 	main(int ac, char **av)
@@ -409,7 +424,7 @@ int 	main(int ac, char **av)
 	(void)ac;
 	(void)av;
 
-//	while (1)
+	while (1)
 		menu();
 	return 0;
 }
