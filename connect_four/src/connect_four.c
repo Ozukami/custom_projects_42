@@ -207,12 +207,21 @@ int		send_choice(t_game *game, int client_socket, int p)
 	return (atoi(buffer) - 1);
 }
 
-void	display_winner(t_game *game, int winner)
+void	display_winner(t_game *game, int winner, int p)
 {
+	if (!winner)
+	{
+		printf("%sNO WINNER%s\n", RED, DEFAULT);
+		system("afplay ressources/aiff/wihlelm_sound.aiff");
+	}
 	printf(PURPLE);
 	if (winner == 1)
 		printf(CYAN);
 	printf("The Winner is %s !%s\n", ((winner == 1) ? P1_PSEUDO : P2_PSEUDO), DEFAULT);
+	if (winner == p)
+		system("afplay ressources/aiff/win_sound.aiff");
+	else
+		system("afplay ressources/aiff/loose_sound.aiff");
 }
 
 void	start_new_game(t_game *game, int client_socket)
@@ -234,10 +243,10 @@ void	start_new_game(t_game *game, int client_socket)
 		if ((winner = check_winner(game, atoi(buffer) - 1, 2)))
 			break ;
 	}
-	display_winner(game, winner);
+	display_winner(game, winner, 1);
 }
 
-void	play_w_host(t_game *game, int client_socket)
+void	play_v_host(t_game *game, int client_socket)
 {
 	char		buffer[BUF_SIZE + 1];
 	ssize_t		r;
@@ -256,7 +265,7 @@ void	play_w_host(t_game *game, int client_socket)
 		if ((winner = check_winner(game, j, 2)))
 			break ;
 	}
-	display_winner(game, winner);
+	display_winner(game, winner, 2);
 }
 
 void	host_game(t_game *game)
@@ -300,6 +309,8 @@ void	host_game(t_game *game)
 	printf("P1 = %s (%d)%s\n", P1_PSEUDO, P1_ID, ((P1->is_host) ? " [HOST]" : ""));
 	printf("P2 = %s (%d)%s\n", P2_PSEUDO, P2_ID, ((P2->is_host) ? " [HOST]" : ""));
 	start_new_game(game, client_socket);
+	close(server_socket);
+	close(client_socket);
 }
 
 void connect_to_host(t_game *game)
@@ -333,7 +344,8 @@ void connect_to_host(t_game *game)
 	printf("Waiting for the server...\n");
 	printf("P1 = %s (%d)%s\n", P1_PSEUDO, P1_ID, ((P1->is_host) ? " [HOST]" : ""));
 	printf("P2 = %s (%d)%s\n", P2_PSEUDO, P2_ID, ((P2->is_host) ? " [HOST]" : ""));
-	play_w_host(game, client_socket);
+	play_v_host(game, client_socket);
+	close(client_socket);
 }
 
 void versus_ia(t_game *game)
