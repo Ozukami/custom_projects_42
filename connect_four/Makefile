@@ -6,7 +6,7 @@
 #    By: apoisson <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/03 11:29:15 by apoisson          #+#    #+#              #
-#    Updated: 2017/07/03 04:36:09 by apoisson         ###   ########.fr        #
+#    Updated: 2017/07/09 00:38:18 by apoisson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,16 @@ FLAGS = -Wall -Wextra
 
 all: $(NAME)
 
-$(NAME): src/connect_four.c
-	@printf "\033[0;36m> Compiling... \033[0m"
-	@gcc $(FLAGS) -I includes -o $(NAME) $^
+$(NAME): src/connect_four.c libft.a
+	@printf "\033[0;36m> Compiling connect_four... \033[0m"
+	@gcc $(FLAGS) $^ -I includes -o $(NAME) -L. -lft
+	@printf "\033[0;32mOK\n\033[0m"
+
+libft.a:
+	@printf "\033[0;36m> Compiling libft.a... \033[0m"
+	@make -C libft/
+	@make clean -C libft/
+	@mv libft/libft.a .
 	@printf "\033[0;32mOK\n\033[0m"
 
 fclean:
