@@ -188,16 +188,22 @@ int		check_winner(t_game *game, int j, int p)
 {
 	int		rep;
 
+	printf("START CHECK WIN\n");
 	if ((rep = check_line(game, j, p)))
 		return (rep);
+	printf("END CHECK LINE\n");
 	if ((rep = check_column(game, j, p)))
 		return (rep);
+	printf("CHECK COL\n");
 	if ((rep = check_diago_r(game, j, p)))
 		return (rep);
+	printf("CHECK DIA\n");
 	if ((rep = check_diago_l(game, j, p)))
 		return (rep);
+	printf(" DIA l\n");
 	if ((rep = tray_is_full(game)))
 		return (rep);
+	printf("END CHECK WIN\n");
 	return (0);
 }
 
@@ -229,8 +235,16 @@ void	display_winner(t_game *game, int winner, int p)
 		return ;
 	}
 	printf(PURPLE);
+	if (!P1 && p == 3)
+	{
+		printf(CYAN);
+		printf("IA won !%s\n", DEFAULT);
+		system("afplay ressources/aiff/loose_sound.aiff");
+		exit (0);
+	}
 	if (winner == 1)
 		printf(CYAN);
+	printf("\nWINNER %d\n", winner);
 	printf("The Winner is %s !%s\n", ((winner == 1) ? P1_PSEUDO : P2_PSEUDO), DEFAULT);
 	if (winner == p)
 		system("afplay ressources/aiff/win_sound.aiff");
@@ -354,9 +368,66 @@ void connect_to_host(t_game *game)
 	close(client_socket);
 }
 
-void versus_ia(t_game *game)
+void	start_ia(t_game *game)
 {
-	(void)game;
+	int		i;
+
+	if (!(IA = ft_memalloc(sizeof(t_ia))))
+		exit_perror("Malloc failed");
+	if (!(IA_MAP = ft_memalloc(sizeof(int *) * 8)))
+		exit_perror("Malloc failed");
+	i = -1;
+	while (++i < 8)
+		if (!(IA_MAP[i] = ft_memalloc(sizeof(int) * 8)))
+			exit_perror("Malloc failed");
+	IA_ID = 3;
+}
+
+int	ia_process(void)
+{
+	static int turn = 0;
+
+	turn++;
+	if (turn == 3)
+		turn = 8;
+	if (turn > 7)
+		turn = 1;
+	return (turn);
+}
+
+void	versus_ia(t_game *game)
+{
+	char	buffer[PSEUDO_SIZE + 1];
+	int	r;
+	int	winner;
+	int	ia_answer;
+
+	printf("Enter a Pseudo\n");
+	scanf("%s", buffer);
+	P2 = new_player(buffer, 2, 0, 0);
+	start_ia(game);
+	while (1)
+	{
+		ia_answer = ia_process();
+		update_game(game, ia_answer - 1, IA_ID);
+		display_game(game);
+		printf("| %d |\n", ia_answer);
+		if ((r = check_winner(game, ia_answer - 1, 3)))
+		{
+			winner = 3;
+			break ;
+		}
+		printf("Chose a column : [1-7]\n");
+		scanf("%s", buffer);
+		update_game(game, atoi(buffer) - 1, P2_ID);
+		display_game(game);
+		if ((r = check_winner(game, atoi(buffer) - 1, 2)))
+		{
+			winner = 2;
+			break ;
+		}
+	}
+	display_winner(game, 2, winner);
 	printf("VS IA [Work in Progress]\n");
 }
 
@@ -379,6 +450,7 @@ t_game	*new_game()
 		TRAY[i] = ft_memalloc(sizeof(int) * 7);
 	P1 = NULL;
 	P2 = NULL;
+	IA = NULL;
 	return (game);
 }
 
@@ -416,7 +488,8 @@ void	menu(void)
 		versus_ia(game);
 	if (atoi(choice) == 4)
 		exit(0);
-	free_game(game);
+	//free_game(game);
+	exit (0);
 }
 
 int 	main(int ac, char **av)
