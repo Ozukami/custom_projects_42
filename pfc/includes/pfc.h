@@ -14,6 +14,6 @@
 
 typedef struct sockaddr_in	t_sock;
 
-# define IP_ADDR	"10.0.2.15"
+# define IP_ADDR	"127.0.0.0"
 
 #endif

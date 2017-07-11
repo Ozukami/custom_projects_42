@@ -19,7 +19,7 @@
 # define CYAN			"\033[36m"
 # define WHITE			"\033[37m"
 
-# define IP_ADDR		"192.168.1.63"
+# define IP_ADDR		"127.0.0.1"
 # define BUF_SIZE		1024
 # define PSEUDO_SIZE	128
 

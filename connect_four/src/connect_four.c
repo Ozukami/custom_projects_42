@@ -188,22 +188,16 @@ int		check_winner(t_game *game, int j, int p)
 {
 	int		rep;
 
-	printf("START CHECK WIN\n");
 	if ((rep = check_line(game, j, p)))
 		return (rep);
-	printf("END CHECK LINE\n");
 	if ((rep = check_column(game, j, p)))
 		return (rep);
-	printf("CHECK COL\n");
 	if ((rep = check_diago_r(game, j, p)))
 		return (rep);
-	printf("CHECK DIA\n");
 	if ((rep = check_diago_l(game, j, p)))
 		return (rep);
-	printf(" DIA l\n");
 	if ((rep = tray_is_full(game)))
 		return (rep);
-	printf("END CHECK WIN\n");
 	return (0);
 }
 
@@ -383,6 +377,162 @@ void	start_ia(t_game *game)
 	IA_ID = 3;
 }
 
+/* TODO ia algo*/
+
+int		line_ia(t_game *game, int x, int y)
+{
+	int		allies;
+	int		ennemies;
+
+	allies = 0;
+	ennemies = 0;
+	while (++x < 6)
+	{
+		if (TRAY[y][x] == 3)
+		{
+			if (!ennemies)
+				allies += 5;
+			else
+				return (ennemies);
+		}
+		else if (TRAY[y][x] == 2)
+		{
+			if (!allies)
+				ennemies += 5;
+			else
+				return (allies);
+		}
+		if (ennemies == 15)
+			return (99);
+		if (allies == 15)
+			return (100);
+	}
+	if (!allies && ennemies)
+		return (ennemies);
+	return (allies);
+}
+
+int		column_ia(t_game *game, int x, int y)
+{
+	int		allies;
+	int		ennemies;
+
+	allies = 0;
+	ennemies = 0;
+	while (++y < 6)
+	{
+		if (TRAY[y][x] == 3)
+		{
+			if (!ennemies)
+				allies += 5;
+			else
+				return (ennemies);
+		}
+		else if (TRAY[y][x] == 2)
+		{
+			if (!allies)
+				ennemies += 5;
+			else
+				return (allies);
+		}
+		if (ennemies == 15)
+			return (99);
+		if (allies == 15)
+			return (100);
+	}
+	if (!allies && ennemies)
+		return (ennemies);
+	return (allies);
+}
+
+void	analyse_map(t_game *game)
+{
+	int	x;
+	int	y;
+	int	rep;
+	int	waiting;
+
+	rep = 0;
+	x = -1;
+	waiting = 10;
+	printf("START ANALYSEMAP\n");
+	while (++x <= 6)
+	{
+		y = 0;
+		while (y < 6 && TRAY[y][x] == 0)	
+			y++;
+		printf("[%d, %d]\n", x, y);
+		rep += column_ia(game, x, y - 1);
+		printf("COL DONE\n");
+		rep += line_ia(game, x, y - 1);
+		printf("LINE DONE\n");
+		//rep += diago_ia(game, y, x);
+		IA_MAP[y][x] = rep;
+		rep = 0;
+		printf("[%d, %d] -> value set == %d\n", x, y, IA_MAP[y][x]);
+	}
+}
+
+void	reset_map(t_game *game)
+{
+	int	x;
+	int	y;
+
+	y = -1;
+	while (++y < 6)
+	{
+		x = -1;
+		while (++x <= 6)
+			IA_MAP[y][x] = 0;
+	}
+}
+
+int	set_answer(t_game *game)
+{
+	int	x;
+	int	y;
+	int	r;
+
+	r = 0;
+	y = -1;
+	while (++y < 6)
+	{
+		x = -1;
+		while (++x <= 6)
+			if (r < IA_MAP[y][x])
+				r = y;
+	}
+	reset_map(game);
+	return (r);
+}
+
+int	ia_process2(t_game *game)
+{
+	int	rep;
+	static int turn = 0;
+
+	turn++;
+	if (turn == 1)
+		return (4);
+	printf("ANALYSEMAP\n");
+	analyse_map(game);
+
+	int	y = -1;
+	int	x = -1;
+
+	while (++y < 6)
+	{
+		x = -1;
+		while (++x <= 6)
+			printf("| %d |", IA_MAP[y][x]);
+		printf("\n");
+	}
+
+	printf("ANSWER\n");
+	rep = set_answer(game);
+	return (rep);
+}
+
 int	ia_process(void)
 {
 	static int turn = 0;
@@ -409,6 +559,11 @@ void	versus_ia(t_game *game)
 	while (1)
 	{
 		ia_answer = ia_process();
+		/*
+		printf("START PROCESS2\n");
+		ia_answer = ia_process2(game);
+		printf("END PROCESS2\n");
+		*/
 		update_game(game, ia_answer - 1, IA_ID);
 		display_game(game);
 		printf("| %d |\n", ia_answer);
