@@ -229,16 +229,8 @@ void	display_winner(t_game *game, int winner, int p)
 		return ;
 	}
 	printf(PURPLE);
-	if (!P1 && p == 3)
-	{
-		printf(CYAN);
-		printf("IA won !%s\n", DEFAULT);
-		system("afplay ressources/aiff/loose_sound.aiff");
-		exit (0);
-	}
 	if (winner == 1)
 		printf(CYAN);
-	printf("\nWINNER %d\n", winner);
 	printf("The Winner is %s !%s\n", ((winner == 1) ? P1_PSEUDO : P2_PSEUDO), DEFAULT);
 	if (winner == p)
 		system("afplay ressources/aiff/win_sound.aiff");
@@ -547,43 +539,47 @@ int	ia_process(void)
 
 void	versus_ia(t_game *game)
 {
-	char	buffer[PSEUDO_SIZE + 1];
-	int	r;
-	int	winner;
-	int	ia_answer;
+	char	*buffer;
+	int		winner;
+	int		ia_answer;
 
+	printf("VS IA [Work in Progress]\n");
 	printf("Enter a Pseudo\n");
-	scanf("%s", buffer);
+	get_next_line(0, &buffer);
 	P2 = new_player(buffer, 2, 0, 0);
 	start_ia(game);
+	ia_answer = 2;
 	while (1)
 	{
-		ia_answer = ia_process();
 		/*
+		//ia_answer = ia_process();
 		printf("START PROCESS2\n");
 		ia_answer = ia_process2(game);
 		printf("END PROCESS2\n");
 		*/
-		update_game(game, ia_answer - 1, IA_ID);
-		display_game(game);
-		printf("| %d |\n", ia_answer);
-		if ((r = check_winner(game, ia_answer - 1, 3)))
+		// IA TURN
+		do
 		{
-			winner = 3;
+			ia_answer++;
+			ia_answer = ia_answer % 7;
+			printf("%s%d%s\n", RED, ia_answer, DEFAULT);
+		} while (TRAY[0][ia_answer] != 0);
+		update_game(game, ia_answer, IA_ID);
+		if ((winner = check_winner(game, ia_answer, 3)))
 			break ;
-		}
-		printf("Chose a column : [1-7]\n");
-		scanf("%s", buffer);
+		do
+		{
+			do
+			{
+				printf("Chose a column : [1-7]\n");
+				get_next_line(0, &buffer);
+			} while (atoi(buffer) < 1 || atoi(buffer) > 7);
+		} while (TRAY[0][atoi(buffer) - 1] != 0);
 		update_game(game, atoi(buffer) - 1, P2_ID);
-		display_game(game);
-		if ((r = check_winner(game, atoi(buffer) - 1, 2)))
-		{
-			winner = 2;
+		if ((winner = check_winner(game, atoi(buffer) - 1, 2)))
 			break ;
-		}
 	}
 	display_winner(game, 2, winner);
-	printf("VS IA [Work in Progress]\n");
 }
 
 int	check_choice(int i)
