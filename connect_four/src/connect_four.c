@@ -1,4 +1,3 @@
-
 #include "connect_four.h"
 
 void	display_game(t_game *game)
