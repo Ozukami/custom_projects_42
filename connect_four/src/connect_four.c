@@ -376,26 +376,57 @@ int		line_ia(t_game *game, int x, int y)
 	int		allies;
 	int		ennemies;
 	int		turn;
+	int		cut;
+	int		x2;
 
 	allies = 0;
 	ennemies = 0;
 	turn = 0;
+	cut = 0;
+	x2 = x;
+	if (x + 3 >= 7)
+		cut = 10;
 	while (++turn < 4 && ++x <= 6)
 	{
 		printf("Y LINE %d\n", y);
 		if (turn == 1 && !TRAY[y][x])
-			return (0);
+			break ;
 		if (TRAY[y][x] == 3 && !ennemies)
-			allies += 10;
+			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
-			ennemies += 8;
+			ennemies += 2;
 	}
-	if (allies == 30)
-		return (100);
-	else if (ennemies == 24)
-		return (99);
-	else if (ennemies < allies)
+	if (allies == 9 && turn == 4)
+		return (120);
+	else if (ennemies == 6 && turn == 4)
+		return (90);
+	turn = 0;
+	while (++turn < 4 && --x2 >= 0)
+	{
+		printf("Y LINE %d\n", y);
+		if (turn == 1 && !TRAY[y][x])
+			break ;
+		if (TRAY[y][x] == 3 && !ennemies)
+			allies += 3;
+		else if (TRAY[y][x] == 2 && !allies)
+			ennemies += 2;
+	}
+	if (allies == 9 && turn == 4)
+		return (120);
+	else if (ennemies == 6 && turn == 4)
+		return (90);
+	if (allies)
+		allies *= turn;
+	else
+		ennemies *= turn;
+	if (ennemies < allies)
+	{
+		if (allies > cut)
+			return (allies - cut);
 		return (allies);
+	}
+	if (ennemies > cut)
+		return (ennemies - cut);
 	return (ennemies);
 }
 
@@ -416,38 +447,42 @@ int		diago_l_ia(t_game *game, int x, int y)
 	turn = 0;
 	x2 = x;
 	y2 = y;
-	printf("ICI ?\n");
+	printf("ICI4 ?\n");
 	while (++turn < 4 && ++y < 6 && --x >= 0)
 	{
+		if (turn == 1 && !TRAY[y][x])
+			break ;
 		if (TRAY[y][x] == 3 && !ennemies)
 			allies += 5;
 		else if (TRAY[y][x] == 2 && !allies)
 			ennemies += 4;
 	}
 	turn = 0;
-	printf("ICI ?\n");
+	printf("ICI ? 3\n");
 	while (++turn < 4 && --y2 >= 0 && --x2 >= 0)
 	{
+		if (turn == 1 && !TRAY[y2][x2])
+			break ;
 		printf("X = %d, Y = %d\n\n", x, y);
 		if (TRAY[y2][x2] == 3 && !ennemies)
 			allies2 += 5;
 		else if (TRAY[y2][x2] == 2 && !allies)
 			ennemies2 += 4;
 	}
-	printf("ICI ?\n");
+	printf("ICI2 ?\n");
 		printf("Ennemies = %d | Allies = %d\n", ennemies, allies);
 	//sleep(3);
 	if (allies == 15 || allies2 == 15)
 		return (100);
 	else if (ennemies == 12 || ennemies2 == 12)
 		return (99);
-	printf("ICI ?\n");
+	printf("ICI1 ?\n");
 	ennemies += ennemies2;
 	allies += allies2;
-	printf("ICI ?\n");
+	printf("ICI0 ?\n");
 	if (ennemies < allies)
 		return (allies);
-	printf("ICI ?\n");
+	printf("ICI5 ?\n");
 	return (ennemies);
 }
 
@@ -470,6 +505,8 @@ int		diago_r_ia(t_game *game, int x, int y)
 	y2 = y;
 	while (++turn < 4 && ++y < 6 && ++x <= 6)
 	{
+		if (turn == 1 && !TRAY[y][x])
+			break ;
 		if (TRAY[y][x] == 3 && !ennemies)
 			allies += 5;
 		else if (TRAY[y][x] == 2 && !allies)
@@ -478,6 +515,8 @@ int		diago_r_ia(t_game *game, int x, int y)
 	turn = 0;
 	while (++turn < 4 && --y2 >= 0 && ++x2 <= 6)
 	{
+		if (turn == 1 && !TRAY[y2][x2])
+			break ;
 		if (TRAY[y2][x2] == 3 && !ennemies)
 			allies2 += 5;
 		else if (TRAY[y2][x2] == 2 && !allies)
@@ -501,26 +540,37 @@ int		column_ia(t_game *game, int x, int y)
 	int		allies;
 	int		ennemies;
 	int		turn;
+	int		cut;
 
 	allies = 0;
 	ennemies = 0;
 	turn = 0;
+	cut = 0;
+	if (y + 3 >= 6)
+		cut = 10;
 	while (++turn < 4 && ++y < 6)
 	{
-		printf("%d\n", y);
-		if (TRAY[y][x] == 3 && !ennemies)
-			allies += 10;
+		if (turn == 1 && !TRAY[y][x])
+			break ;
+		else if (TRAY[y][x] == 3 && !ennemies)
+			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
-			ennemies += 8;
+			ennemies += 2;
 	}
 		printf("Ennemies = %d | Allies = %d\n", ennemies, allies);
 	//sleep(3);
-	if (allies == 30)
-		return (100);
-	else if (ennemies == 24)
-		return (99);
+	if (allies == 9 && turn == 4)
+		return (120);
+	else if (ennemies == 6 && turn == 4)
+		return (90);
 	else if (ennemies < allies)
+	{
+		if (allies > cut)
+			return (allies - cut);
 		return (allies);
+	}
+	if (ennemies > cut)
+		return (ennemies - cut);
 	return (ennemies);
 }
 
