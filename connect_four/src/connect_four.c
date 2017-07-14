@@ -632,7 +632,7 @@ int	ia_process2(t_game *game)
 	}
 	rep = set_answer(game);
 	printf("ANSWER = { %d }\n", rep);
-	sleep (5);
+	//sleep (5);
 	return (rep);
 }
 
