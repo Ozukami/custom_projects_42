@@ -26,7 +26,6 @@
 # define TRAY			(game->tray)
 # define P1				(game->p1)
 # define P2				(game->p2)
-# define IA				(game->ia)
 
 # define P1_PSEUDO		((game->p1)->pseudo)
 # define P1_SOCKET		((game->p1)->socket)
@@ -35,26 +34,18 @@
 # define P2_SOCKET		((game->p1)->socket)
 # define P2_ID			((game->p2)->id)
 
-# define IA_MAP			((game->ia)->map_analyse)
-# define IA_ID			((game->ia)->id)
+# define IA_MAP			((game->p1)->map_analyse)
+# define IA_ID			((game->p1)->id)
 
 typedef struct sockaddr_in	t_sock;
 typedef struct s_game		t_game;
 typedef struct s_player		t_player;
-typedef struct s_ia		t_ia;
 
 struct s_game
 {
 	int			**tray;
 	t_player	*p1;
 	t_player	*p2;
-	t_ia		*ia;
-};
-
-struct s_ia
-{
-	int		**map_analyse;
-	int		id;
 };
 
 struct s_player
@@ -63,6 +54,7 @@ struct s_player
 	char		*pseudo;
 	int			is_host;
 	int			socket;
+	int			**map_analyse;
 };
 
 #endif

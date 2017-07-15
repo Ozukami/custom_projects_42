@@ -1,5 +1,14 @@
 #include "connect_four.h"
 
+void	exit_perror(char *error)
+{
+	if (!error)
+		perror("");
+	else
+		perror(error);
+	exit(0);
+}
+
 void	display_game(t_game *game)
 {
 	int		i;
@@ -36,22 +45,25 @@ void	display_game(t_game *game)
 t_player	*new_player(char *pseudo, int id, int host, int socket)
 {
 	t_player	*player;
+	int			i;
 
 	player = ft_memalloc(sizeof(t_player));
 	player->id = id;
 	player->pseudo = ft_strdup(pseudo);
 	player->is_host = host;
 	player->socket = socket;
+	if (id == 3)
+	{
+		printf("IA !\n");
+		player->id = 1;
+		if (!(player->map_analyse = ft_memalloc(sizeof(int *) * 7)))
+			exit_perror("Malloc failed");
+		i = -1;
+		while (++i < 8)
+			if (!((player->map_analyse)[i] = ft_memalloc(sizeof(int) * 8)))
+				exit_perror("Malloc failed");
+	}
 	return (player);
-}
-
-void	exit_perror(char *error)
-{
-	if (!error)
-		perror("");
-	else
-		perror(error);
-	exit(0);
 }
 
 void	update_game(t_game *game, int col, int p)
@@ -227,9 +239,9 @@ void	display_winner(t_game *game, int winner, int p)
 		system("afplay ressources/aiff/wihlelm.aiff");
 		return ;
 	}
-	printf(PURPLE);
-	if (winner == 1)
-		printf(CYAN);
+	printf(CYAN);
+	if (winner == 2)
+		printf(PURPLE);
 	printf("The Winner is %s !%s\n", ((winner == 1) ? P1_PSEUDO : P2_PSEUDO), DEFAULT);
 	if (winner == p)
 		system("afplay ressources/aiff/win_sound.aiff");
@@ -353,6 +365,7 @@ void connect_to_host(t_game *game)
 	close(client_socket);
 }
 
+/*
 void	start_ia(t_game *game)
 {
 	int		i;
@@ -365,8 +378,9 @@ void	start_ia(t_game *game)
 	while (++i < 8)
 		if (!(IA_MAP[i] = ft_memalloc(sizeof(int) * 8)))
 			exit_perror("Malloc failed");
-	IA_ID = 3;
+	IA_ID = 1;
 }
+*/
 
 /* TODO ia algo*/
 
@@ -389,7 +403,7 @@ int		line_ia(t_game *game, int x, int y)
 	{
 		if (turn == 1 && !TRAY[y][x])
 			break ;
-		if (TRAY[y][x] == 3 && !ennemies)
+		if (TRAY[y][x] == IA_ID && !ennemies)
 			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
 			ennemies += 2;
@@ -399,7 +413,7 @@ int		line_ia(t_game *game, int x, int y)
 	{
 		if (turn == 1 && !TRAY[y][x2])
 			break ;
-		if (TRAY[y][x2] == 3 && !ennemies2)
+		if (TRAY[y][x2] == IA_ID && !ennemies2)
 			allies2 += 3;
 		else if (TRAY[y][x2] == 2 && !allies2)
 			ennemies2 += 2;
@@ -436,7 +450,7 @@ int		diago_l_ia(t_game *game, int x, int y)
 	y2 = y;
 	while (++turn < 4 && ++y < 6 && --x >= 0)
 	{
-		if (TRAY[y][x] == 3 && !ennemies)
+		if (TRAY[y][x] == IA_ID && !ennemies)
 			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
 			ennemies += 2;
@@ -444,7 +458,7 @@ int		diago_l_ia(t_game *game, int x, int y)
 	turn = 0;
 	while (++turn < 4 && --y2 >= 0 && --x2 >= 0)
 	{
-		if (TRAY[y2][x2] == 3 && !ennemies)
+		if (TRAY[y2][x2] == IA_ID && !ennemies)
 			allies2 += 3;
 		else if (TRAY[y2][x2] == 2 && !allies)
 			ennemies2 += 2;
@@ -480,7 +494,7 @@ int		diago_r_ia(t_game *game, int x, int y)
 	y2 = y;
 	while (++turn < 4 && ++y < 6 && ++x <= 6)
 	{
-		if (TRAY[y][x] == 3 && !ennemies)
+		if (TRAY[y][x] == IA_ID && !ennemies)
 			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
 			ennemies += 2;
@@ -488,7 +502,7 @@ int		diago_r_ia(t_game *game, int x, int y)
 	turn = 0;
 	while (++turn < 4 && --y2 >= 0 && ++x2 <= 6)
 	{
-		if (TRAY[y2][x2] == 3 && !ennemies)
+		if (TRAY[y2][x2] == IA_ID && !ennemies)
 			allies2 += 3;
 		else if (TRAY[y2][x2] == 2 && !allies)
 			ennemies2 += 2;
@@ -518,7 +532,7 @@ int		column_ia(t_game *game, int x, int y)
 	{
 		if (turn == 1 && !TRAY[y][x])
 			return (0);
-		else if (TRAY[y][x] == 3 && !ennemies)
+		else if (TRAY[y][x] == IA_ID && !ennemies)
 			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
 			ennemies += 2;
@@ -609,7 +623,6 @@ int	ia_process2(t_game *game)
 	turn++;
 	if (turn == 1)
 		return (4);
-	printf("ANALYSEMAP\n");
 	analyse_map(game);
 
 	int	y = -1;
@@ -647,10 +660,11 @@ void	versus_ia(t_game *game)
 	int		ia_answer;
 
 	printf("VS IA [Work in Progress]\n");
+	P1 = new_player("IA", 3, 0, 0);
 	printf("Enter a Pseudo\n");
 	get_next_line(0, &buffer);
 	P2 = new_player(buffer, 2, 0, 0);
-	start_ia(game);
+	//start_ia(game);
 	ia_answer = 2;
 	while (1)
 	{
@@ -669,7 +683,7 @@ void	versus_ia(t_game *game)
 			printf("%s%d%s\n", RED, ia_answer, DEFAULT);
 		} while (TRAY[0][ia_answer] != 0);
 		update_game(game, ia_answer, IA_ID);
-		if ((winner = check_winner(game, ia_answer, 3)))
+		if ((winner = check_winner(game, ia_answer, IA_ID)))
 			break ;
 		do
 		{
@@ -683,7 +697,7 @@ void	versus_ia(t_game *game)
 		if ((winner = check_winner(game, atoi(buffer) - 1, 2)))
 			break ;
 	}
-	display_winner(game, 2, winner);
+	display_winner(game, winner, 2);
 }
 
 int	check_choice(int i)
@@ -705,7 +719,6 @@ t_game	*new_game()
 		TRAY[i] = ft_memalloc(sizeof(int) * 7);
 	P1 = NULL;
 	P2 = NULL;
-	IA = NULL;
 	return (game);
 }
 
