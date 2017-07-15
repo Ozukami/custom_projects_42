@@ -436,8 +436,6 @@ int		diago_l_ia(t_game *game, int x, int y)
 	y2 = y;
 	while (++turn < 4 && ++y < 6 && --x >= 0)
 	{
-		if (turn == 1 && !TRAY[y][x])
-			break ;
 		if (TRAY[y][x] == 3 && !ennemies)
 			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
@@ -446,8 +444,6 @@ int		diago_l_ia(t_game *game, int x, int y)
 	turn = 0;
 	while (++turn < 4 && --y2 >= 0 && --x2 >= 0)
 	{
-		if (turn == 1 && !TRAY[y2][x2])
-			break ;
 		if (TRAY[y2][x2] == 3 && !ennemies)
 			allies2 += 3;
 		else if (TRAY[y2][x2] == 2 && !allies)
@@ -484,28 +480,24 @@ int		diago_r_ia(t_game *game, int x, int y)
 	y2 = y;
 	while (++turn < 4 && ++y < 6 && ++x <= 6)
 	{
-		if (turn == 1 && !TRAY[y][x])
-			break ;
 		if (TRAY[y][x] == 3 && !ennemies)
-			allies += 5;
+			allies += 3;
 		else if (TRAY[y][x] == 2 && !allies)
-			ennemies += 4;
+			ennemies += 2;
 	}
 	turn = 0;
 	while (++turn < 4 && --y2 >= 0 && ++x2 <= 6)
 	{
-		if (turn == 1 && !TRAY[y2][x2])
-			break ;
 		if (TRAY[y2][x2] == 3 && !ennemies)
-			allies2 += 5;
+			allies2 += 3;
 		else if (TRAY[y2][x2] == 2 && !allies)
-			ennemies2 += 4;
+			ennemies2 += 2;
 	}
 	//sleep(3);
-	if (allies == 15 || allies2 == 15)
-		return (100);
-	else if (ennemies == 12 || ennemies2 == 12)
-		return (99);
+	if (allies == 9 || allies2 == 9)
+		return (120);
+	else if (ennemies == 6 || ennemies2 == 6)
+		return (90);
 	ennemies += ennemies2;
 	allies += allies2;
 	if (ennemies < allies)
